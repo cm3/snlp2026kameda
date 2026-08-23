@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="LLM Beliefs Are in Their Heads と Thinking Out Loud を読む目的を整理する研究会用縦スクロールスライド"
+      content="第18回最先端NLP研究会(2026) 発表資料: LLM Beliefs Are in Their Heads / Thinking Out Loud"
     />
-    <title>LLMは自分の正しさをどう持ち、どう言えるのか</title>
+    <title>LLM Beliefs Are in Their Heads / Thinking Out Loud</title>
     <script>
       if (new URLSearchParams(window.location.search).has("present")) {
         document.documentElement.classList.add("present");
@@ -227,6 +227,31 @@
         max-width: 780px;
         color: var(--muted);
         font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      }
+
+      .title-stack {
+        display: grid;
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+
+      .paper-title {
+        max-width: 13em;
+        margin: 0;
+        font-size: clamp(2.2rem, 5.8vw, 4.8rem);
+        line-height: 1.12;
+      }
+
+      .paper-title + .paper-title {
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .byline {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.8vw, 1.28rem);
+        line-height: 1.7;
       }
 
       .note {
@@ -489,49 +514,23 @@
     </svg>
     <main class="talk">
       <section class="screen center">
-        <p class="kicker">SNLP 2026 / Paper Reading Plan</p>
-        <h1>内部の truth signal から、外部の review design へ</h1>
-        <p class="lead">
-          2本の論文を、単なる paper reading ではなく、
-          「LLM は正しさを内部にどう持ち、それを利用可能な形でどう外へ出せるか」という流れで読む。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Starting Point</p>
-        <h2>元の関心は、情報抽出の信頼性出力だった</h2>
-        <div class="two-col">
-          <div>
-            <h3>実務上の問い</h3>
-            <ul>
-              <li>LLM に `confidence: 0.87` を出させる意味はあるか。</li>
-              <li>それとも `needs_review` のような行為ラベルがよいか。</li>
-              <li>根拠スパン、null、曖昧性をどう出力に含めるか。</li>
-            </ul>
-          </div>
-          <div>
-            <h3>暫定結論</h3>
-            <ul>
-              <li>細かい連続値の微差には意味が薄い。</li>
-              <li>主出力は根拠付きレビュー判定に寄せる。</li>
-              <li>連続値が必要なら後段で監査可能な信号から作る。</li>
-              <li>5段階程度の review level は有用そう。</li>
-            </ul>
-          </div>
+        <p class="kicker">第18回最先端NLP研究会(2026)</p>
+        <div class="title-stack" aria-label="発表で扱う2本の論文">
+          <h1 class="paper-title">LLM Beliefs Are in Their Heads</h1>
+          <h1 class="paper-title">Thinking Out Loud</h1>
         </div>
-        <p class="note">
-          ここから出てきた読書上の問い: 内部に truth-sensitive な信号があるとして、
-          それは confidence、abstention、review 判定として信頼できる形で外に出せるのか。
+        <p class="byline">
+          亀田尭宙（人間文化研究機構）
         </p>
       </section>
 
       <section class="screen">
         <p class="kicker">Two Papers</p>
-        <h2>主線は「内部にあるもの」と「外に出るもの」のズレ</h2>
+        <h2>内部表現と自己申告を分けて読む</h2>
         <div class="axis">
           <div class="panel">
             <strong>LLM Beliefs Are in Their Heads</strong>
-            <p>内部表現に truth / belief-like な方向があるかを見る。</p>
+            <p>内部表現に truth / belief-like な方向があるかを調べる。</p>
             <ul>
               <li>Accuracy</li>
               <li>Use</li>
@@ -542,7 +541,7 @@
           <div class="arrow">→</div>
           <div class="panel">
             <strong>Thinking Out Loud</strong>
-            <p>外に出る verbalized confidence が正誤や abstention と合うかを見る。</p>
+            <p>verbalized confidence が正誤や abstention と合うかを調べる。</p>
             <ul>
               <li>Calibration</li>
               <li>Failure prediction</li>
@@ -556,9 +555,9 @@
       <section class="flow">
         <h2>なぜこの2本を一緒に読むか</h2>
         <p>
-          主線は単純である。1本目は「内部に truth-sensitive な表現がある」ことを示す。
-          2本目は「それが verbalized confidence や abstention として、そのまま信頼できるわけではない」ことを示す。
-          したがって最後は、confidence 数値ではなく review design へ戻す。
+          1本目は、モデル内部の表現から真偽に関わる方向を読めるかを調べる。
+          2本目は、モデルが外に出す confidence や `I don't know` が正誤と合うかを調べる。
+          両者を並べると、内部に読める信号があることと、それを信頼できる出力として使えることは別問題だと分かる。
         </p>
         <table>
           <thead>
@@ -592,8 +591,8 @@
           </tbody>
         </table>
         <p class="note warn">
-          留保: truth / confidence / abstention は同じ概念ではない。
-          ここでは同一視するのではなく、「内部信号を外部の利用可能な判断へ変換するには何が足りないか」を見る。
+          読みどころ: truth / confidence / abstention を同じ概念として扱わない。
+          どこが接続し、どこで切れるかを見る。
         </p>
       </section>
 
@@ -601,7 +600,7 @@
         <p class="kicker">Paper 1</p>
         <h2>LLM Beliefs Are in Their Heads</h2>
         <p class="lead">
-          LLM に belief があると雑に言うのではなく、belief-like representation が満たすべき基準を
+          LLM に belief があると言い切る前に、belief-like representation が満たすべき基準を
           Accuracy / Use / Coherence / Uniformity に分けて検査する。
         </p>
         <div class="three-col">
@@ -610,7 +609,7 @@
             truth-sensitive な中間表現が大きいモデルで見える。steering により出力の truth-value 判断も変わる。
           </div>
           <div class="panel">
-            <strong>面白い点</strong>
+            <strong>注目点</strong>
             attention head が residual stream より局所的で、介入効果も出やすい可能性がある。
           </div>
           <div class="panel">
@@ -871,7 +870,7 @@
             <path d="M458 320 H546" class="write-line"></path>
             <path d="M777 222 C780 260 750 277 731 276" class="arrow-line"></path>
 
-            <text x="42" y="404" class="caption">読むべき結論: residual stream でも読める。一部 head output 全体には truth signal が局所的に現れる。</text>
+            <text x="42" y="404" class="caption">要点: residual stream でも読める。一部 head output 全体には truth signal が局所的に現れる。</text>
           </svg>
           <ul class="diagram-notes">
             <li><strong>LLM 入力</strong><br />文だけ。True / False は prompt に入れない。</li>
@@ -952,7 +951,7 @@
 
       <section class="flow">
         <p class="kicker">5.1 Accuracy / Results</p>
-        <h2>大きい Llama / Gemma 系では真偽をかなり読める</h2>
+        <h2>Llama / Gemma 系では真偽を高精度に読める</h2>
         <p>
           層や head の強さは、probe の重みの大きさではなく、その layer / head の activation だけで
           True/False を分類した test accuracy で見る。本文では residual stream の Top-3 probe accuracy と、
@@ -985,7 +984,7 @@
             <tr>
               <td>Llama</td>
               <td>0.889</td>
-              <td>かなり高精度に読める。</td>
+              <td>高精度に読める。</td>
             </tr>
             <tr>
               <td>Gemma</td>
@@ -1037,9 +1036,8 @@
           </tbody>
         </table>
         <p class="note">
-          まとめ: residual stream 全体からも True/False は読める。一方で、全 head が同じではなく、
-          一部の layer・一部の head output に truth signal が局所的に現れる。これは 5.2 Use で
-          steering 対象を選ぶ根拠になる。
+          residual stream 全体からも True/False は読める。ただし全 head が同じではない。
+          一部の layer・head output に truth signal が局所的に現れるため、5.2 Use ではそこを steering 対象にする。
         </p>
       </section>
 
@@ -1074,39 +1072,6 @@
         </p>
       </section>
 
-      <section class="flow">
-        <p class="kicker">5.2 Use / Prompt</p>
-        <h2>出力は True / False / Unknown に縛っている</h2>
-        <p>
-          Use 実験は、自由な自然文生成を観察しているわけではない。プロンプトで回答形式を
-          True / False / Unknown に制限し、その条件下で activation steering が truth-value 出力確率を
-          動かすかを測る。
-        </p>
-        <pre><code>Determine whether the following statement is factually correct.
-Respond with exactly one of: True, False, Unknown.
-Answer Unknown unless you are certain.
-
-{STMT}
-Answer:</code></pre>
-        <div class="two-col">
-          <div class="panel">
-            <strong>この実験で言えること</strong>
-            <ul>
-              <li>この prompt / 出力形式のもとで、truth direction が True/False logits を動かす。</li>
-              <li>random direction より truth direction の効果が出るかを比較できる。</li>
-              <li>probe で読めるだけでなく、出力計算に関与する可能性を見られる。</li>
-            </ul>
-          </div>
-          <div class="panel">
-            <strong>この実験だけでは言えないこと</strong>
-            <ul>
-              <li>別の回答形式で、同じ signal がどう表面化するか。</li>
-              <li>自然文説明、`not` 付与、情報抽出 JSON などへの変換。</li>
-              <li>内部 truth signal がそのまま confidence や needs_review になるか。</li>
-            </ul>
-          </div>
-        </div>
-      </section>
 
       <section class="flow">
         <p class="kicker">5.2 Use / Results</p>
@@ -1197,8 +1162,8 @@ p or q</code></pre>
             <strong>probabilistic coherence</strong>
             <p>probe の連続出力を疑似確率として読み、確率的な制約を満たすかを見る。</p>
             <pre><code>P(p) + P(not p) ≈ 1
-P(p and q) <= P(p)
-P(p) <= P(p or q)</code></pre>
+P(p and q) &lt;= P(p)
+P(p) &lt;= P(p or q)</code></pre>
           </div>
         </div>
         <p class="note warn">
@@ -1206,58 +1171,6 @@ P(p) <= P(p or q)</code></pre>
         </p>
       </section>
 
-      <section class="flow">
-        <p class="kicker">5.3 Coherence / Calibration</p>
-        <h2>probe のスコアを、確率らしく補正して使う</h2>
-        <p>
-          logistic regression probe は、activation からまず連続スコアを出す。このスコアは True/False 分類には使えるが、
-          そのまま `P(true)` として信頼できるとは限らない。そこで validation data に合わせて calibration する。
-        </p>
-        <div class="axis">
-          <div class="panel">
-            <strong>raw probe output</strong>
-            <pre><code>score = w · activation + b
-p_raw = sigmoid(score)</code></pre>
-            <p>`p_raw = 0.8` が本当に「80% true」を意味するとは限らない。</p>
-          </div>
-          <div class="arrow">→</div>
-          <div class="panel">
-            <strong>calibrated pseudoprobability</strong>
-            <pre><code>p_hat = calibrate(p_raw)</code></pre>
-            <p>isotonic regression で、実際の頻度に合うように 0-1 の値へ補正する。</p>
-          </div>
-        </div>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>例</th>
-              <th>coherent に近い</th>
-              <th>coherent でない</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>p</td>
-              <td>`P_hat(p) = 0.91`</td>
-              <td>`P_hat(p) = 0.85`</td>
-            </tr>
-            <tr>
-              <td>not p</td>
-              <td>`P_hat(not p) = 0.12`</td>
-              <td>`P_hat(not p) = 0.78`</td>
-            </tr>
-            <tr>
-              <td>合計</td>
-              <td>`1.03`: だいたい 1</td>
-              <td>`1.63`: p も not-p も true っぽい</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          これはモデル自身の主観確率そのものではない。activation から probe で読み出した値を、
-          確率的制約の検査に使えるよう補正した pseudoprobability である。
-        </p>
-      </section>
 
       <section class="flow">
         <p class="kicker">5.3 Coherence / Results</p>
@@ -1304,62 +1217,18 @@ p_raw = sigmoid(score)</code></pre>
           </tbody>
         </table>
         <p class="note warn">
-          解釈: truth direction はあるが、線形 probe だけでは generalized negation を安定して扱えない。
+          truth direction はあるが、線形 probe だけでは generalized negation を安定して扱えない。
           情報抽出では negation、条件、absent/null、unsupported inference に注意が必要になる。
         </p>
       </section>
 
-      <section class="flow">
-        <p class="kicker">5.4 Uniformity / Setup</p>
-        <h2>同じ truth direction は、別 domain でも使えるのか</h2>
-        <p>
-          Uniformity は、Accuracy で見つけたような truth-sensitive direction が、特定 domain 専用ではなく
-          複数 domain にまたがって使えるかを見る。実験としては steering ではなく、probe の
-          cross-domain accuracy を測る。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>手順</th>
-              <th>内容</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1. 使う場所を決める</td>
-              <td>Accuracy でよかった model の best layer / best head を使う。</td>
-              <td>全 layer/head を再探索するのではなく、truth signal が強い場所で検査する。</td>
-            </tr>
-            <tr>
-              <td>2. train domain を変える</td>
-              <td>Common Claims、単一 domain、複数 domain の組み合わせで probe を訓練する。</td>
-              <td>汎用文だけで足りるか、特定 domain 依存か、多様な訓練が必要かを見る。</td>
-            </tr>
-            <tr>
-              <td>3. test domain を変える</td>
-              <td>Cities、Companies、数比較、翻訳など別 domain の True/False 文で評価する。</td>
-              <td>train していない domain でも True/False を分離できれば uniformity が高い。</td>
-            </tr>
-            <tr>
-              <td>4. logical paraphrase は除外</td>
-              <td>negation などを含む拡張 dataset は混ぜない。</td>
-              <td>Coherence の失敗、特に negation の弱さで Uniformity の評価が濁るのを避ける。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          したがって 5.4 は「別領域で Accuracy が保たれるか」の実験であり、Use のように
-          activation steering で出力を動かす実験ではない。
-        </p>
-      </section>
 
       <section class="flow">
         <p class="kicker">5.4 Uniformity / Results</p>
-        <h2>多様な domain で訓練すると、truth direction はかなり一般化する</h2>
+        <h2>多様な domain で訓練すると、truth direction は一般化する</h2>
         <p>
           結果は residual level と head level の両方で強い。特に複数 domain を含む大きな訓練セットでは、
-          各 test domain への平均 accuracy が高く、worst domain でも chance をかなり上回る。
+          各 test domain への平均 accuracy が高く、worst domain でも chance を上回る。
           instruction-tuned models は base models より cross-domain consistency が高い傾向がある。
         </p>
         <table class="compact-table">
@@ -1411,7 +1280,7 @@ p_raw = sigmoid(score)</code></pre>
           </tbody>
         </table>
         <p class="note warn">
-          解釈: literal / factual な True/False 文に限れば、truth signal はかなり domain-robust。
+          literal / factual な True/False 文に限れば、truth signal は domain-robust。
           ただし皮肉・比喩・語用論的転用のように、文脈で命題内容が変わるケースまでは検査していない。
         </p>
       </section>
@@ -1433,7 +1302,7 @@ p_raw = sigmoid(score)</code></pre>
             小規模 reasoning model は `I don't know` が減り、知識境界の認識が弱まる可能性がある。
           </div>
           <div class="panel">
-            <strong>示唆</strong>
+            <strong>注意点</strong>
             推論能力の向上は、自己認識や abstention 能力の向上と同じではない。
           </div>
         </div>
@@ -1488,7 +1357,8 @@ p_raw = sigmoid(score)</code></pre>
           </tbody>
         </table>
         <p class="note">
-          「どの（pretrained）モデルが確信度の表明を得意とするか」ではなく<br />「post-training が確信度の表明にどう効くか」を調べている
+          ここでの関心は「どの事前学習モデルが confidence 表明を得意とするか」ではない。
+          post-training が confidence 表明にどう効くかを見る。
         </p>
       </section>
 
@@ -1530,43 +1400,11 @@ p_raw = sigmoid(score)</code></pre>
           </tbody>
         </table>
         <p class="note">
-          ここで測っているのは「内部に truth signal があるか」ではなく、モデルが外に出した
+          ここで測っているのは「内部に truth signal があるか」ではない。モデルが外に出した
           confidence が empirical accuracy と合うかである。
         </p>
       </section>
 
-      <section class="flow">
-        <p class="kicker">Paper 2 / Prompting 2</p>
-        <h2>prompt 比較は、結論が prompt 依存でないかを見る保険</h2>
-        <p>
-          verbalized confidence は prompt に敏感なので、単一の聞き方だけだと
-          「その形式で聞いたからそうなっただけ」と言われやすい。そこで著者らは3種類の prompting strategy を並べ、
-          training paradigm と scale の効果が prompt を変えても残るかを確認する。
-        </p>
-        <div class="two-col">
-          <div class="panel">
-            <strong>比較で切り分けたいもの</strong>
-            <ul>
-              <li>reasoning SFT / reasoning RL による calibration 改善。</li>
-              <li>0%--100% と 0.0--1.0 の表現形式の差。</li>
-              <li>自己反省 prompt が confidence を下げるか、逆に過信を増やすか。</li>
-              <li>reasoning-heavy task と factuality task で効果が変わるか。</li>
-            </ul>
-          </div>
-          <div class="panel">
-            <strong>読むときの注意</strong>
-            <ul>
-              <li>Self-reflection は内部監視ではなく、追加 prompt による外部的な再評価。</li>
-              <li>probability score は calibrated probability ではなく、モデルの自己申告。</li>
-              <li>主結論は prompt 技法そのものより、post-training と model scale の違いに置かれている。</li>
-            </ul>
-          </div>
-        </div>
-        <p class="note warn">
-          結果として、reasoning benchmarks では RL reasoning models が複数 prompt で安定して良い。
-          一方、factuality では小規模 reasoning models の miscalibration が残り、Self-reflection の効き方も dataset 依存になる。
-        </p>
-      </section>
 
       <section class="flow">
         <p class="kicker">Paper 2 / Results 1</p>
@@ -1646,10 +1484,11 @@ p_raw = sigmoid(score)</code></pre>
           </tbody>
         </table>
         <p class="note">
-          結論: reasoning-heavy な問題では、長く考えられるようにする訓練は性能だけでなく
+          reasoning-heavy な問題では、長く考えられるようにする訓練は性能だけでなく
           verbalized confidence の信頼性も改善しやすい。
         </p>
       </section>
+
 
       <section class="flow">
         <p class="kicker">Paper 2 / Results 2</p>
@@ -1657,11 +1496,6 @@ p_raw = sigmoid(score)</code></pre>
         <p>
           SimpleQA / FreshQA では、reasoning models は `I don't know` に相当する not attempted response を大きく減らす。
           しかし、小規模モデルでは accuracy が十分に上がらず、むしろ calibration が悪化する場合がある。
-        </p>
-        <p class="note">
-          Calibration: confidence と実際の正答率が合っていること。たとえば confidence 70% と言った問題群が
-          実際に約70%正しければ well-calibrated。ECE は confidence ごとに bin 分けし、
-          各 bin の「平均 confidence」と「実正答率」のズレを重み付き平均した値で、小さいほどよい。
         </p>
         <table class="compact-table">
           <thead>
@@ -1697,10 +1531,6 @@ p_raw = sigmoid(score)</code></pre>
             </tr>
           </tbody>
         </table>
-        <p class="note">
-          DeepSeek は 14B / 32B family と同じサイズ軸の行ではない。この論文では、DeepSeek-V3 と
-          DeepSeek-R1 を大型の DeepSeek family として別枠に置き、post-training の差を見る比較にしている。
-        </p>
         <table class="compact-table">
           <thead>
             <tr>
@@ -1727,238 +1557,8 @@ p_raw = sigmoid(score)</code></pre>
             </tr>
           </tbody>
         </table>
-        <p class="note">
-          ○: accuracy と calibration が改善。△: 一部改善または限定的改善。×: accuracy が上がらない、または calibration が悪化。
-          ECE が高い場合、ここでは「答えたが当たらない問題に高めの confidence を出す」過信として読むのが自然。
-        </p>
         <p class="note warn">
-          結論: reasoning は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Paper 2 / Results 3</p>
-        <h2>prompt を変えても、主因は training paradigm と scale</h2>
-        <p>
-          Vanilla CoT、probability score variant、Self-reflection を比べても、reasoning benchmarks では
-          RL reasoning models が安定して低い ECE を示す。一方、factuality では prompt の効き方が dataset によって変わる。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>観点</th>
-              <th>代表値</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>AIME: 14B 系</td>
-              <td>Qwen2.5-14B ECE 0.760、R1-Distill 0.342、DeepCoder 0.222</td>
-              <td>prompt 以前に、reasoning post-training の差が大きい。</td>
-            </tr>
-            <tr>
-              <td>AIME: Self-reflection</td>
-              <td>Qwen2.5-32B 0.752 → 0.289、Skywork-32B 0.183 → 0.076</td>
-              <td>SR は一部 reasoning tasks で ECE を下げる。</td>
-            </tr>
-            <tr>
-              <td>SimpleQA</td>
-              <td>DeepSeek-R1 0.324 → 0.551、small reasoning models も高 ECE</td>
-              <td>SR が factuality で常に効くわけではなく、過信を増やす場合がある。</td>
-            </tr>
-            <tr>
-              <td>FreshQA</td>
-              <td>多くの小規模モデルで SR は ECE を下げる。例: Qwen2.5-14B 0.436 → 0.287</td>
-              <td>FreshQA では SR が助けになることがある。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          著者の読み: prompting strategy は calibration を動かすが、支配的なのは
-          RL を含む post-training と model scale である。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Development / The Confidence Dichotomy</p>
-        <h2>次の発展: confidence は tool の種類でも大きく変わる</h2>
-        <p>
-          `Thinking Out Loud` は、主に「モデルが単発の問題に答えるとき、confidence が正答率に対応しているか」を見る。
-          `The Confidence Dichotomy` はこれを tool-use agent に広げ、外部ツールが confidence をどう歪めるかを調べる。
-          後者は calibration in LLMs の先行研究として `Thinking Out Loud` を明示的に参照している。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>観点</th>
-              <th>Thinking Out Loud</th>
-              <th>The Confidence Dichotomy</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>問題設定</td>
-              <td>reasoning / factuality task に答え、最後に confidence を表明する。</td>
-              <td>agent が web search や code interpreter を使いながら答え、confidence を表明する。</td>
-            </tr>
-            <tr>
-              <td>中心的な問い</td>
-              <td>推論訓練で「正しいときに高く、間違うときに低く」言えるようになるか。</td>
-              <td>tool を使うと calibration は一律によくなるのか、それとも tool type に依存するのか。</td>
-            </tr>
-            <tr>
-              <td>発見</td>
-              <td>reasoning-heavy task では改善するが、factuality では abstention が弱くなることがある。</td>
-              <td>evidence tool は過信を強め、verification tool は一部 grounding になる、という二分が出る。</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>tool type</th>
-              <th>例</th>
-              <th>confidence への作用</th>
-              <th>直感</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>evidence tool</td>
-              <td>web search / retrieval / RAG</td>
-              <td>誤答時の confidence が上がりやすい。</td>
-              <td>検索結果はもっともらしい証拠を返すが、答えの正誤を直接検証しない。</td>
-            </tr>
-            <tr>
-              <td>verification tool</td>
-              <td>code interpreter / calculator / SQL / solver</td>
-              <td>過信を抑えやすいが、完全ではない。</td>
-              <td>実行エラーや計算結果という deterministic feedback がある。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          発展としての読み方: 「reasoning post-training は confidence をどう変えるか」から、
-          「外部証拠・外部検証を組み込む agent では confidence の意味がどう変わるか」へ進む。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Development / Calibration-Aware Training</p>
-        <h2>対策の方向: accuracy だけでなく calibration も報酬に入れる</h2>
-        <p>
-          `The Confidence Dichotomy` は、標準的な tool-use RL では search agent の過信が残るため、
-          CAR（Calibration Agentic RL）を提案する。出力に confidence タグを要求し、正答と confidence の対応も報酬化する。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>要素</th>
-              <th>説明</th>
-              <th>この論文での意味</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>format reward</td>
-              <td>agent の reasoning / action / observation の形式に加え、`&lt;confidence&gt;` の出力を要求する。</td>
-              <td>confidence を後付け評価ではなく、agent の通常出力の一部にする。</td>
-            </tr>
-            <tr>
-              <td>Brier 系 reward</td>
-              <td>正答なら高 confidence、誤答なら低 confidence が得になるようにする。</td>
-              <td>ただし重み次第では accuracy が落ちる、または reward hacking 的になる。</td>
-            </tr>
-            <tr>
-              <td>MSCR</td>
-              <td>正答の最低報酬が、誤答の最高報酬より常に高くなるように margin を入れる。</td>
-              <td>「低 confidence の誤答」が「低 confidence の正答」に勝つ抜け道を塞ぐ。</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>結果</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Search agent で ECE が大きく低下。最大で約68%の相対改善。</td>
-              <td>evidence tool による過信は、専用の calibration-aware RL でかなり抑えられる。</td>
-            </tr>
-            <tr>
-              <td>Serper API など noisy web setting でも改善が残る。</td>
-              <td>ローカル Wikipedia retriever にだけ過適合したわけではない、という主張。</td>
-            </tr>
-            <tr>
-              <td>code interpreter 型の TIR でも改善するが、難問では ECE が高く残る。</td>
-              <td>verification tool は grounding になるが、最終的な calibration はモデルの推論能力にも縛られる。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          `Thinking Out Loud` への接続: 「推論訓練だけでは知らないと言えない」なら、
-          次の工学的対策は「abstention / confidence を reward や fine-tuning objective に明示的に入れる」方向になる。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Related Work / Mitigation Lines</p>
-        <h2>周辺研究は「confidence を明示的に学習対象にする」方向へ伸びている</h2>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>研究</th>
-              <th>主な対象</th>
-              <th>何を足しているか</th>
-              <th>この発表での位置づけ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>The Hallucination Tax of Reinforcement Finetuning</td>
-              <td>reasoning RFT と unanswerable math</td>
-              <td>標準 RFT が refusal を壊すことを示し、SUM という unanswerable data を少量混ぜる。</td>
-              <td>`Thinking Out Loud` の「知らないと言えない」問題とかなり近い。</td>
-            </tr>
-            <tr>
-              <td>Beyond Binary Rewards / RLCR</td>
-              <td>reasoning model の confidence</td>
-              <td>正誤の二値報酬に Brier score を加え、confidence を報酬に入れる。</td>
-              <td>`The Confidence Dichotomy` の CAR / MSCR の直接の土台に近い。</td>
-            </tr>
-            <tr>
-              <td>ADVICE</td>
-              <td>verbalized confidence</td>
-              <td>confidence が自分の答えに依存しない answer-independence を問題化し、answer-grounded に fine-tune する。</td>
-              <td>「答えたあとに本当にその答えを見て confidence を言っているのか」という切り口。</td>
-            </tr>
-            <tr>
-              <td>LoVeC</td>
-              <td>long-form generation</td>
-              <td>長文中の各 statement に、その場で数値 confidence を付けるよう RL で訓練する。</td>
-              <td>QA から、事実記述の連続である長文生成へ拡張する方向。</td>
-            </tr>
-            <tr>
-              <td>Abstain-R1</td>
-              <td>unanswerable query</td>
-              <td>単なる “I don’t know” ではなく、何が足りないかを説明する clarification も reward 化する。</td>
-              <td>abstention を「拒否」ではなく、次に必要な情報を返す行為として扱う。</td>
-            </tr>
-            <tr>
-              <td>LLMs Must Be Taught to Know What They Don’t Know</td>
-              <td>不確実性推定一般</td>
-              <td>少量の graded examples と LoRA で、プロンプトだけより良い uncertainty estimator を作る。</td>
-              <td>重い RL だけでなく、軽い fine-tuning / probe 的な実用路線もあることを示す。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          まとめ: confidence / abstention は、prompt で引き出すだけでは不安定。
-          最近の流れは「正答率とは別の学習信号として、confidence・拒否・clarification を明示的に入れる」方向。
+          reasoning は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。
         </p>
       </section>
 
@@ -1979,46 +1579,8 @@ p_raw = sigmoid(score)</code></pre>
           </div>
         </div>
         <p class="note warn">
-          ここでの留保: true/false の内部表現、confidence の自己申告、abstention の行動は別物である。
-          だから情報抽出では「もっと推論させれば信頼性も上がる」とは限らない。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Prompt Design</p>
-        <h2>confidence ではなく、レビュー行為へ接続する</h2>
-        <p class="lead">
-          0-100% の細かい連続値ではなく、根拠つきの status と review level を出す。
-          これは確率の自己申告ではなく、人間の作業を決めるラベルである。
-        </p>
-        <div class="scale">
-          <div><strong>auto_accept</strong><br />根拠が明示的で schema に合う。</div>
-          <div><strong>light_check</strong><br />低リスクなら採用可。重要用途では確認。</div>
-          <div><strong>review</strong><br />通常レビュー。値はあるが判断余地あり。</div>
-          <div><strong>priority_review</strong><br />候補複数、曖昧、高リスク。</div>
-          <div><strong>cannot_extract</strong><br />根拠不足、矛盾、unsupported。</div>
-        </div>
-      </section>
-
-      <section class="flow">
-        <h2>情報抽出プロンプトへの戻し方</h2>
-        <p>
-          3本目として読まないことにした `Certainty in Uncertainty` からも、反面教師的な示唆は残る。
-          不確実性は、数値化されるだけでは不十分で、coverage や decision rule に接続されて初めて使える。
-        </p>
-        <pre><code>{
-  "field": "target_field",
-  "value": "抽出値。なければ null",
-  "status": "extracted | absent | ambiguous | unsupported",
-  "evidence_span": "抽出値を直接支持する原文",
-  "source_location": "page/section/chunk id",
-  "review_level": "auto_accept | light_check | review | priority_review | cannot_extract",
-  "needs_review": true,
-  "review_reason": "レビューが必要な理由"
-}</code></pre>
-        <p>
-          LLM に `confidence: 0.84` を自己申告させるより、値・根拠・状態・レビュー理由を出させる。
-          連続 score が必要なら、後段で evidence span、schema 適合、複数抽出一致などから作る。
+          true/false の内部表現、confidence の自己申告、abstention の行動は別物である。
+          「モデルが何かを内部に持つ」ことと「それをこちらが使える形で出す」ことは分けて考える。
         </p>
       </section>
 
@@ -2027,177 +1589,27 @@ p_raw = sigmoid(score)</code></pre>
         <h2>読むときの問い</h2>
         <ol>
           <li>`belief-like` と `confidence` は、どの程度同じ問題を見ているのか。</li>
-          <li>内部の truth direction は、外部の abstention や review 判定に接続できるのか。</li>
-          <li>Coherence が弱いなら、情報抽出でどの field が危ないか。</li>
+          <li>内部の truth direction は、外部の confidence や abstention に接続できるのか。</li>
+          <li>Coherence が弱いなら、どんな命題で危なくなるのか。</li>
           <li>reasoning model の `I don't know` 減少は、抽出タスクの hallucination と同型か。</li>
-          <li>5段階 review level は、モデル自己申告で足りるか、後段 score が必要か。</li>
+          <li>confidence を数値で聞く以外に、どの出力設計がありうるか。</li>
         </ol>
       </section>
 
       <section class="screen">
         <p class="kicker">Expected Takeaway</p>
-        <h2>論文紹介の狙い</h2>
+        <h2>今日のまとめ</h2>
         <p class="lead">
-          「LLM は何を知っているのか」から一歩進めて、
-          「内部の信号を、利用者が信頼できる操作にどう変換するか」を議論する。
+          2本を並べると、内部表現と自己申告のあいだにまだ距離があることが見える。
         </p>
         <ul>
           <li>1本目: 内部表現には truth-sensitive な信号がある。</li>
           <li>2本目: その信号が外部の confidence / abstention として安定するとは限らない。</li>
-          <li>実用: 数値 confidence ではなく、根拠・status・review level へ落とす。</li>
-          <li>留保: truth / confidence / abstention は接続できるが、同一視はしない。</li>
+          <li>truth / confidence / abstention は接続できるが、同一視しない。</li>
         </ul>
       </section>
 
-      <section class="flow">
-        <p class="kicker">QA</p>
-        <h2>この Transformer 説明は、どこまで一般化できるか</h2>
-        <p>
-          ここでの説明は、Transformer 全般に共通する部品説明を含むが、論文の実験としては
-          decoder-only autoregressive LLM を前提に読むのが安全である。特に final token の
-          activation を取り出して truth-sensitive representation を probe する読み方は、GPT 系の
-          decoder-only model に寄った説明である。
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>話題</th>
-              <th>適用範囲</th>
-              <th>説明での注意</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>token が embedding され、各層でベクトル表現が更新される</td>
-              <td>Transformer 全般</td>
-              <td>encoder-only、decoder-only、encoder-decoder のどれにも共通する基本構造。</td>
-            </tr>
-            <tr>
-              <td>`d_model` と residual stream の形</td>
-              <td>Transformer 全般で使える基本整理</td>
-              <td>`d_model` は token embedding と residual stream に共通する埋込次元数。1 layer 出力時点では `入力 token 数 x d_model`、全 layer 分を保存すると `layer 数 x 入力 token 数 x d_model`。</td>
-            </tr>
-            <tr>
-              <td>residual connection により、各 layer の出力が元の表現に足し込まれる</td>
-              <td>Transformer 全般</td>
-              <td>「上書き」ではなく「加算で更新される」と説明すると、residual stream の直感につながる。</td>
-            </tr>
-            <tr>
-              <td>residual stream を、各部品が読み書きする共有通路として見る</td>
-              <td>主に mechanistic interpretability でよく使う見方。decoder-only / encoder-only のどちらにもかなり有効</td>
-              <td>厳密な標準用語というより、解釈研究で便利な抽象化。今回の論文では residual stream と attention heads の両方を probe する。</td>
-            </tr>
-            <tr>
-              <td>attention head を QK と OV に分けて考える</td>
-              <td>multi-head attention を持つ Transformer 全般</td>
-              <td>QK は「どこから読むか」、OV は「読んだ情報をどう書くか」という説明が有用。ただし実装により細部は異なる。</td>
-            </tr>
-            <tr>
-              <td>causal mask により、未来 token を見ずに過去 token だけを見る</td>
-              <td>decoder-only autoregressive model、および encoder-decoder の decoder 側</td>
-              <td>BERT のような encoder-only model では通常この制約はない。今回の対象モデルは decoder-only なので、この前提でよい。</td>
-            </tr>
-            <tr>
-              <td>final token の activation を取り出して probe する</td>
-              <td>decoder-only LLM で特に自然</td>
-              <td>次 token prediction の直前に、文全体についての情報が final token 位置へ集約されやすい、という読み方になる。</td>
-            </tr>
-            <tr>
-              <td>unembedding により residual stream から次 token logits を出す</td>
-              <td>decoder-only autoregressive LM で中心的</td>
-              <td>encoder-only model では、そのまま次 token logits に読むわけではない。分類 head や masked LM head など別の出力構造になる。</td>
-            </tr>
-            <tr>
-              <td>True / False ラベルを prompt に入れず、後から activation に対応づけて probe を学習する</td>
-              <td>probe 実験一般に広く使える</td>
-              <td>今回の Accuracy は「LLM がラベルを見て答える」実験ではなく、「ラベルなし入力時の内部表現から真偽を読めるか」の実験。</td>
-            </tr>
-            <tr>
-              <td>BERT など encoder-only model への拡張</td>
-              <td>activation に教師ラベルを対応づけて probe すること自体は可能。ただし decoder-only と同じ final-token next-token prediction としては読まない</td>
-              <td>`[CLS]` 表現や各 token 表現を probe するなど、どの位置を代表表現とみなすかを別途決める必要がある。</td>
-            </tr>
-            <tr>
-              <td>T5 など encoder-decoder model への拡張</td>
-              <td>probe 実験は可能。ただし truth-sensitive signal を encoder 側、decoder 側、cross-attention 側のどこで読むかを設計し直す必要がある</td>
-              <td>どこに truth-sensitive representation があるのかを、decoder-only より細かく切り分ける必要がある。</td>
-            </tr>
-            <tr>
-              <td>`LLM Beliefs Are in Their Heads` の実験対象</td>
-              <td>decoder-only autoregressive transformers</td>
-              <td>GPT-2、GPT-J、Pythia、Llama、Gemma、Yi など。発表ではここを明示すると過剰一般化を避けられる。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          まとめると、部品説明は Transformer 全般の入口として使える。ただし、この論文の結果は
-          decoder-only LLM の residual stream / attention heads、とくに final token 周辺から truth-sensitive
-          signal を読む実験として説明するのがよい。
-        </p>
-      </section>
 
-      <section class="flow">
-        <h2>手元資料</h2>
-        <ul>
-          <li>
-            <code>ref/2026.acl-long.1905_llm-beliefs-are-in-their-heads/summary_ja.md</code>
-          </li>
-          <li>
-            <code>ref/2025.emnlp-main.73_thinking-out-loud/summary_ja.md</code>
-          </li>
-          <li>
-            <code>knowledge/information_extraction_reliability_prompting.md</code>
-          </li>
-        </ul>
-        <h2>参考文献</h2>
-        <ol class="refs">
-          <li>
-            Alessandro Corona Mendozza and Anders Søgaard. 2026.
-            <em>LLM Beliefs Are in Their Heads.</em>
-            ACL 2026. <a href="https://aclanthology.org/2026.acl-long.1905/">ACL Anthology</a>
-          </li>
-          <li>
-            Qingcheng Zeng, Weihao Xuan, Leyang Cui, and Rob Voigt. 2025.
-            <em>Thinking Out Loud: Do Reasoning Models Know When They’re Right?</em>
-            EMNLP 2025. <a href="https://aclanthology.org/2025.emnlp-main.73/">ACL Anthology</a>
-          </li>
-          <li>
-            Yuqicheng Zhu et al. 2025.
-            <em>Certainty in Uncertainty: Reasoning over Uncertain Knowledge Graphs with Statistical Guarantees.</em>
-            EMNLP 2025. <a href="https://aclanthology.org/2025.emnlp-main.441/">ACL Anthology</a>
-          </li>
-          <li>
-            Katherine Tian et al. 2023.
-            <em>Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback.</em>
-            EMNLP 2023. <a href="https://aclanthology.org/2023.emnlp-main.330/">ACL Anthology</a>
-          </li>
-          <li>
-            Ashish Vaswani et al. 2017.
-            <em>Attention Is All You Need.</em>
-            <a href="https://doi.org/10.48550/arXiv.1706.03762">arXiv</a>
-          </li>
-          <li>
-            Nelson Elhage et al. 2021.
-            <em>A Mathematical Framework for Transformer Circuits.</em>
-            <a href="https://transformer-circuits.pub/2021/framework/index.html">Transformer Circuits</a>
-          </li>
-          <li>
-            Samuel Marks and Max Tegmark. 2024.
-            <em>The Geometry of Truth: Emergent Linear Structure in Large Language Model Representations of True/False Datasets.</em>
-            <a href="https://arxiv.org/abs/2310.06824">arXiv</a>
-          </li>
-          <li>
-            TransformerLens documentation.
-            <em>TransformerBridge Model Structure.</em>
-            <a href="https://transformerlensorg.github.io/TransformerLens/content/model_structure.html">Documentation</a>
-          </li>
-          <li>
-            Hugging Face Transformers documentation.
-            <em>Attention mechanisms.</em>
-            <a href="https://huggingface.co/docs/transformers/main/attention">Documentation</a>
-          </li>
-        </ol>
-      </section>
     </main>
   </body>
 </html>
