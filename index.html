@@ -3,10 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="第18回最先端NLP研究会(2026) 発表資料: LLM Beliefs Are in Their Heads / Thinking Out Loud"
-    />
+    <meta name="description" content="第18回最先端NLP研究会(2026) 発表資料: LLM Beliefs Are in Their Heads / Thinking Out Loud" />
     <title>LLM Beliefs Are in Their Heads / Thinking Out Loud</title>
     <script>
       if (new URLSearchParams(window.location.search).has("present")) {
@@ -14,7 +11,7 @@
       }
 
       window.addEventListener("DOMContentLoaded", () => {
-        const slides = Array.from(document.querySelectorAll("main > section"));
+        const slides = Array.from(document.querySelectorAll("main > section, main > .screen, main > .flow"));
         if (!slides.length) return;
 
         const editableSelector = "input, textarea, select, button, [contenteditable='true']";
@@ -49,457 +46,16 @@
         window.addEventListener("keydown", (event) => {
           if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
           if (isEditableTarget(event.target)) return;
-          if (!["ArrowRight", "ArrowDown", "PageDown", "ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) return;
+          if (!["ArrowRight", "ArrowLeft"].includes(event.key)) return;
           if (event.repeat) return;
 
           event.preventDefault();
-          const forward = ["ArrowRight", "ArrowDown", "PageDown"].includes(event.key);
+          const forward = event.key === "ArrowRight";
           scrollToSlide(forward ? 1 : -1);
         });
       });
     </script>
-    <style>
-      :root {
-        color-scheme: light;
-        --bg: #f4f7f8;
-        --paper: #ffffff;
-        --ink: #17181c;
-        --muted: #5f6670;
-        --line: #cfd8df;
-        --accent: #0f766e;
-        --accent-2: #9a3412;
-        --accent-3: #1d4ed8;
-        --soft: #e4f2ef;
-        --soft-2: #eef2ff;
-        --warn: #fff7ed;
-        --code-bg: #20242c;
-        --code-ink: #f6f7fb;
-        --measure: 960px;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        min-height: 100%;
-        scroll-snap-type: y proximity;
-        scroll-padding-block-start: 0;
-        scroll-behavior: smooth;
-        background: var(--bg);
-      }
-
-      html.present {
-        scroll-snap-type: y mandatory;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100%;
-        color: var(--ink);
-        background:
-          linear-gradient(180deg, rgba(15, 118, 110, 0.08), transparent 34rem),
-          var(--bg);
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP",
-          "Segoe UI", sans-serif;
-        font-size: 18px;
-        line-height: 1.72;
-      }
-
-      .talk {
-        width: 100%;
-      }
-
-      .screen,
-      .flow {
-        width: min(var(--measure), calc(100% - 32px));
-        margin: 0 auto;
-        padding: 72px 0;
-      }
-
-      .screen {
-        min-height: 100svh;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-
-      .center {
-        align-items: center;
-        text-align: center;
-      }
-
-      h1,
-      h2,
-      h3 {
-        margin-top: 0;
-        line-height: 1.24;
-        letter-spacing: 0;
-      }
-
-      h1 {
-        max-width: 11em;
-        margin-bottom: 22px;
-        font-size: clamp(2.65rem, 7vw, 5.6rem);
-      }
-
-      h2 {
-        margin-bottom: 24px;
-        font-size: clamp(2rem, 4.8vw, 4.1rem);
-      }
-
-      h3 {
-        margin-bottom: 10px;
-        font-size: 1.28rem;
-      }
-
-      p,
-      ul,
-      ol,
-      table,
-      pre {
-        margin-top: 0;
-        margin-bottom: 1.1rem;
-      }
-
-      a {
-        color: var(--accent-3);
-      }
-
-      code {
-        font-family: SFMono-Regular, Consolas, "Liberation Mono", monospace;
-        font-size: 0.92em;
-      }
-
-      :not(pre) > code {
-        background: #e8edf2;
-        padding: 0.12em 0.32em;
-      }
-
-      pre {
-        max-width: 100%;
-        max-height: 70svh;
-        overflow: auto;
-        border: 1px solid #394150;
-        background: var(--code-bg);
-        color: var(--code-ink);
-        padding: 18px;
-        font-size: 0.9rem;
-        line-height: 1.55;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background: var(--paper);
-        font-size: 0.95rem;
-      }
-
-      .compact-table {
-        font-size: 0.86rem;
-        line-height: 1.45;
-      }
-
-      th,
-      td {
-        border: 1px solid var(--line);
-        padding: 9px 11px;
-        vertical-align: top;
-      }
-
-      th {
-        background: #e8edf2;
-        text-align: left;
-      }
-
-      .kicker {
-        margin-bottom: 10px;
-        color: var(--accent-2);
-        font-size: 0.86rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-
-      .lead {
-        max-width: 780px;
-        color: var(--muted);
-        font-size: clamp(1.15rem, 2.2vw, 1.5rem);
-      }
-
-      .title-stack {
-        display: grid;
-        gap: 18px;
-        margin-bottom: 28px;
-      }
-
-      .paper-title {
-        max-width: 13em;
-        margin: 0;
-        font-size: clamp(2.2rem, 5.8vw, 4.8rem);
-        line-height: 1.12;
-      }
-
-      .paper-title + .paper-title {
-        padding-top: 18px;
-        border-top: 1px solid var(--line);
-      }
-
-      .byline {
-        margin: 0;
-        color: var(--muted);
-        font-size: clamp(1rem, 1.8vw, 1.28rem);
-        line-height: 1.7;
-      }
-
-      .note {
-        border-left: 4px solid var(--accent);
-        background: var(--soft);
-        padding: 16px 18px;
-        color: #183d38;
-      }
-
-      .warn {
-        border-left-color: var(--accent-2);
-        background: var(--warn);
-        color: #57270b;
-      }
-
-      .two-col {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        gap: 26px;
-        align-items: start;
-      }
-
-      .three-col {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .panel {
-        border: 1px solid var(--line);
-        background: var(--paper);
-        padding: 18px;
-      }
-
-      .panel strong {
-        display: block;
-        margin-bottom: 7px;
-      }
-
-      .tag-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 0;
-        list-style: none;
-      }
-
-      .tag-list li {
-        border: 1px solid var(--line);
-        background: var(--paper);
-        padding: 5px 10px;
-        font-size: 0.94rem;
-      }
-
-      .axis {
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 18px;
-        align-items: center;
-      }
-
-      .arrow {
-        color: var(--accent);
-        font-size: 2.4rem;
-        line-height: 1;
-      }
-
-      .scale {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 8px;
-        counter-reset: step;
-      }
-
-      .scale div {
-        counter-increment: step;
-        min-height: 132px;
-        border-top: 4px solid var(--accent-3);
-        background: var(--paper);
-        padding: 12px;
-      }
-
-      .scale div::before {
-        content: counter(step);
-        display: inline-grid;
-        place-items: center;
-        width: 28px;
-        height: 28px;
-        margin-bottom: 10px;
-        border-radius: 999px;
-        background: var(--accent-3);
-        color: white;
-        font-weight: 700;
-      }
-
-      .diagram-block {
-        display: grid;
-        gap: 18px;
-      }
-
-      .diagram-svg {
-        width: 100%;
-        height: auto;
-        border: 1px solid var(--line);
-        background: var(--paper);
-      }
-
-      .diagram-svg text {
-        fill: var(--ink);
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP",
-          "Segoe UI", sans-serif;
-        letter-spacing: 0;
-      }
-
-      .diagram-svg .small {
-        fill: var(--muted);
-        font-size: 16px;
-      }
-
-      .diagram-svg .label {
-        font-size: 18px;
-        font-weight: 700;
-      }
-
-      .diagram-svg .caption {
-        fill: var(--muted);
-        font-size: 15px;
-      }
-
-      .diagram-svg .box {
-        fill: #ffffff;
-        stroke: #9fb1bd;
-        stroke-width: 1.4;
-      }
-
-      .diagram-svg .soft-fill {
-        fill: var(--soft);
-      }
-
-      .diagram-svg .blue-fill {
-        fill: var(--soft-2);
-      }
-
-      .diagram-svg .warn-fill {
-        fill: var(--warn);
-      }
-
-      .diagram-svg .stream {
-        fill: none;
-        stroke: var(--accent);
-        stroke-width: 9;
-        stroke-linecap: round;
-      }
-
-      .diagram-svg .arrow-line {
-        fill: none;
-        stroke: var(--accent-3);
-        stroke-width: 2.5;
-        marker-end: url(#arrowhead);
-      }
-
-      .diagram-svg .write-line {
-        fill: none;
-        stroke: var(--accent-2);
-        stroke-width: 2.5;
-        marker-end: url(#arrowhead-warn);
-      }
-
-      .diagram-notes {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 12px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .diagram-notes li {
-        border-top: 3px solid var(--accent);
-        background: var(--paper);
-        padding: 12px 14px;
-        font-size: 0.96rem;
-      }
-
-      .shape-note {
-        display: inline-block;
-        border: 1px solid var(--line);
-        background: #f8fafc;
-        padding: 0.28em 0.5em;
-        font-family: SFMono-Regular, Consolas, "Liberation Mono", monospace;
-        font-size: 0.9em;
-      }
-
-      .refs li {
-        margin-bottom: 0.5rem;
-      }
-
-      @media (max-width: 760px) {
-        body {
-          font-size: 16px;
-        }
-
-        .screen,
-        .flow {
-          width: min(100% - 24px, var(--measure));
-          padding: 48px 0;
-        }
-
-        .screen {
-          justify-content: flex-start;
-        }
-
-        .two-col,
-        .three-col,
-        .axis,
-        .scale,
-        .diagram-notes {
-          grid-template-columns: 1fr;
-        }
-
-        .arrow {
-          transform: rotate(90deg);
-          justify-self: center;
-        }
-      }
-
-      @media print {
-        html,
-        html.present {
-          scroll-snap-type: none;
-        }
-
-        body {
-          background: #fff;
-          font-size: 12pt;
-        }
-
-        .screen,
-        .flow {
-          width: auto;
-          min-height: auto;
-          padding: 24pt 0;
-          scroll-snap-align: none;
-          page-break-inside: avoid;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="assets/presentation.css" />
   </head>
   <body>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
@@ -513,170 +69,268 @@
       </defs>
     </svg>
     <main class="talk">
-      <section class="screen center">
-        <p class="kicker">第18回最先端NLP研究会(2026)</p>
-        <div class="title-stack" aria-label="発表で扱う2本の論文">
-          <h1 class="paper-title">1本目: 2026.acl-long.1905 LLM Beliefs Are in Their Heads</h1>
-          <h1 class="paper-title">2本目: 2025.smnlp-main.73 Thinking Out Loud</h1>
-          <h1 class="paper-title">（まだ作成中です）</h1>
-        </div>
-        <p class="byline">
-          亀田尭宙（人間文化研究機構）
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Two Papers</p>
-        <h2>内部表現と自己申告を分けて読む</h2>
-        <div class="axis">
-          <div class="panel">
-            <strong>LLM Beliefs Are in Their Heads</strong>
-            <p>内部表現に truth / belief-like な方向があるかを調べる。</p>
-            <ul>
-              <li>Accuracy</li>
-              <li>Use</li>
-              <li>Coherence</li>
-              <li>Uniformity</li>
-            </ul>
-          </div>
-          <div class="arrow">→</div>
-          <div class="panel">
-            <strong>Thinking Out Loud</strong>
-            <p>verbalized confidence が正誤や abstention と合うかを調べる。</p>
-            <ul>
-              <li>Calibration</li>
-              <li>Failure prediction</li>
-              <li>`I don't know`</li>
-              <li>Reasoning tax</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="flow">
-        <h2>なぜこの2本を一緒に読むか</h2>
-        <p>
-          1本目は、モデル内部の表現から真偽に関わる方向を読めるかを調べる。
-          2本目は、モデルが外に出す confidence や `I don't know` が正誤と合うかを調べる。
-          両者を並べると、内部に読める信号があることと、それを信頼できる出力として使えることは別問題だと分かる。
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>観点</th>
-              <th>LLM Beliefs</th>
-              <th>Thinking Out Loud</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>見る場所</td>
-              <td>residual stream / attention heads</td>
-              <td>verbalized confidence / `I don't know`</td>
-            </tr>
-            <tr>
-              <td>中心問題</td>
-              <td>truth-sensitive representation は belief-like と言えるか</td>
-              <td>reasoning model は自分が正しいかを言えるか</td>
-            </tr>
-            <tr>
-              <td>方法</td>
-              <td>linear probes, steering, cross-domain validation</td>
-              <td>ECE/ACE, AUROC, AUPRC, factuality abstention</td>
-            </tr>
-            <tr>
-              <td>情報抽出への接続</td>
-              <td>内部に使えそうな truth signal はあるか</td>
-              <td>それを出力の confidence / review 判定にできるか</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          読みどころ: truth / confidence / abstention を同じ概念として扱わない。
-          どこが接続し、どこで切れるかを見る。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Paper 1</p>
-        <h2>LLM Beliefs Are in Their Heads</h2>
-        <p class="lead">
-          LLM に belief があると言い切る前に、belief-like representation が満たすべき基準を
-          Accuracy / Use / Coherence / Uniformity に分けて検査する。
-        </p>
-        <div class="three-col">
-          <div class="panel">
-            <strong>強い点</strong>
-            truth-sensitive な中間表現が大きいモデルで見える。steering により出力の truth-value 判断も変わる。
-          </div>
-          <div class="panel">
-            <strong>注目点</strong>
-            attention head が residual stream より局所的で、介入効果も出やすい可能性がある。
-          </div>
-          <div class="panel">
-            <strong>弱い点</strong>
-            Coherence は中程度。特に negation や論理的 paraphrase は難しい。
-          </div>
-        </div>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Paper 1 / Terms</p>
-        <h2>4基準は「信念らしさ」の別々の条件</h2>
-        <p>
-          この論文の Accuracy / Use / Coherence / Uniformity は、通常のモデル評価指標というより、
-          内部表現が belief-like と言えるための条件として使われている。日本語では次のように読むと説明しやすい。
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>英語</th>
-              <th>日本語での読み</th>
-              <th>何を問うか</th>
-              <th>実験での見方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Accuracy</td>
-              <td>真偽分離性 / 分離精度</td>
-              <td>内部表現が true input と false input を分けているか。</td>
-              <td>final token の residual stream や head output から、linear probe で True/False を分類する。</td>
-            </tr>
-            <tr>
-              <td>Use</td>
-              <td>機能的使用 / 出力への関与</td>
-              <td>読める truth signal が、実際にモデルの出力計算に使われているか。</td>
-              <td>truth direction に沿って activation を steering し、True/False logits が動くかを見る。</td>
-            </tr>
-            <tr>
-              <td>Coherence</td>
-              <td>整合性</td>
-              <td>p, not-p, p and q, p or q などの論理関係に対して一貫するか。</td>
-              <td>logical paraphrase で probe が崩れないか、calibrated pseudoprobability が確率制約を満たすかを見る。</td>
-            </tr>
-            <tr>
-              <td>Uniformity</td>
-              <td>領域横断的一様性 / ドメイン一貫性</td>
-              <td>都市・企業・数比較・翻訳など、異なる domain でも同じような truth direction が使えるか。</td>
-              <td>ある domain で訓練した probe が、別 domain の True/False 文にも generalize するかを見る。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          発表では、Accuracy は「読めるか」、Use は「使われているか」、Coherence は「矛盾しないか」、
-          Uniformity は「別領域にも通用するか」と言い換えると、実験の役割が分かりやすい。
-        </p>
-      </section>
-
-      <section class="screen">
+<section class="screen center title-biblio-slide">
+  <style>
+    .title-biblio-slide .title-stack {
+      width: min(100%, 1120px);
+      gap: 22px;
+    }
+    .title-biblio-slide .title-paper-list {
+      display: grid;
+      gap: 16px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+    .title-biblio-slide .title-paper-item {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      line-height: 1.3;
+    }
+    .title-biblio-slide .title-paper-item:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    .title-biblio-slide .title-paper-id {
+      display: block;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: 0;
+      line-height: 1.35;
+    }
+    .title-biblio-slide .title-paper-name {
+      display: block;
+      color: var(--ink);
+      font-size: 2rem;
+      font-weight: 760;
+      line-height: 1.18;
+    }
+    .title-biblio-slide .title-paper-authors {
+      display: block;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .title-biblio-slide .title-draft-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.12rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .title-biblio-slide .title-subtitle {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(1.42rem, 2.4vw, 2rem);
+      font-weight: 720;
+      line-height: 1.35;
+    }
+  </style>
+  <p class="kicker">第18回最先端NLP研究会(2026)</p>
+  <div class="title-stack" aria-label="発表で扱う2本の論文">
+    <ul class="title-paper-list">
+    <li class="title-paper-item">
+      <span class="title-paper-id">1本目: 2026.acl-long.1905 (ACL2026)</span>
+      <span class="title-paper-name">LLM Beliefs Are in Their Heads</span>
+      <span class="title-paper-authors">Alessandro Corona Mendozza, Anders Søgaard</span>
+    </li>
+    <li class="title-paper-item">
+      <span class="title-paper-id">2本目: 2025.emnlp-main.73 (EMNLP2025)</span>
+      <span class="title-paper-name">Thinking Out Loud: Do Reasoning Models Know When They’re Right?</span>
+      <span class="title-paper-authors">Qingcheng Zeng, Weihao Xuan, Leyang Cui, Rob Voigt</span>
+    </li>
+    </ul>
+    <p class="title-draft-note">（まだ作成中です）</p>
+  </div>
+  <p class="title-subtitle">LLMが「知っている」ってどういう状態？</p>
+  <p class="byline">亀田尭宙（人間文化研究機構）</p>
+</section>
+<section id="まず問いを分ける" class="level2 screen">
+<h2>まず問いを分ける</h2>
+<p>同じ “Paris is in France” についても、少なくとも次の6種類は別の問いである。</p>
+<style>
+  .epistemic-notions-table .out-of-scope-row td {
+    background: #e1e5e3;
+    color: #74807c;
+  }
+  .epistemic-notions-table .out-of-scope-row strong {
+    color: #5f6c68;
+  }
+</style>
+<div class="compact-table data-table epistemic-notions-table">
+  <table>
+    <thead>
+      <tr>
+        <th>概念</th>
+        <th>問い</th>
+        <th>Paris の例</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Fact / Truth</strong></td>
+        <td><strong>外部の基準では真か？</strong></td>
+        <td>ground truth では “Paris is in France.” は True</td>
+      </tr>
+      <tr>
+        <td><strong>Encoded information / Representation</strong></td>
+        <td><strong>その情報が内部に表象されているか？</strong></td>
+        <td>Paris → France に対応する情報を activation から decode できる</td>
+      </tr>
+      <tr>
+        <td><strong>Belief-like state</strong></td>
+        <td><strong>モデルはそれを真として扱っているか？</strong></td>
+        <td>Paris が France にあることを、真であるものとして判断する</td>
+      </tr>
+      <tr class="out-of-scope-row">
+        <td><strong>Background commitment / Inferential role</strong></td>
+        <td><strong>それを明示せず、他の推論の前提として利用するか？</strong></td>
+        <td>「Louvre は Paris にある」から「Louvre は France にある」と推論する際に Paris → France を前提として使う</td>
+      </tr>
+      <tr>
+        <td><strong>Confidence / Metacognition</strong></td>
+        <td><strong>自分の判断が正しいと、どれくらい見積もるか？</strong></td>
+        <td>「Paris は France にある」という自分の判断に 90% の確信を示す</td>
+      </tr>
+      <tr>
+        <td><strong>Assertion / Verbal output</strong></td>
+        <td><strong>実際に何を外部へ表出するか？</strong></td>
+        <td>“Paris is in France.” と生成する</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="quote">
+<p><strong>Truth ≠ Representation ≠ Belief ≠ Confidence ≠ Output</strong></p>
+</div>
+</section>
+<section class="screen">
+<div class="kicker">
+<p>Two Papers</p>
+</div>
+<section id="本は地図の別々の場所を扱う" class="level2">
+<h2>2本は地図の別々の場所を扱う</h2>
+<div class="compact-table data-table">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>対象 ↓ / 現れ方 →</th>
+<th>内部表象</th>
+<th>外部への表出・出力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>事実についての情報</strong></td>
+<td><strong>Beliefs: Accuracy</strong> — 外部の True/False と対応する情報を probe</td>
+<td><strong>Thinking Out Loud</strong> — factual task での正答・誤答 / <code>I don't know</code></td>
+</tr>
+<tr>
+<td><strong>信念に類するもの</strong></td>
+<td><strong>Beliefs: Coherence / Uniformity</strong> — belief-like な整合性・一般性</td>
+<td><strong>Beliefs: Use</strong> — steering → 真偽判断の変化</td>
+</tr>
+<tr>
+<td><strong>確信・メタ認知</strong></td>
+<td>—</td>
+<td><strong>Thinking Out Loud</strong> — verbalized confidence / calibration</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>同じ「知っている」に見えるものでも、内部に表現される情報、真として扱う状態、外に出る回答や confidence は別の観測対象である。今回の焦点は、内部状態が answer / verbalized confidence / abstention としてどの程度 faithful に表出されるかにある。</p>
+</div>
+</section>
+</section>
+<section class="screen">
+<div class="kicker">
+<p>Paper 1</p>
+</div>
+<section id="llm-beliefs-are-in-their-heads" class="level2">
+<h2>LLM Beliefs Are in Their Heads</h2>
+<div class="lead">
+<p>内部に decode 可能な truth-sensitive representation があるとして、それを belief-like state と呼ぶには何を追加で確かめるべきかを問う。</p>
+</div>
+<div class="three-col">
+<div class="panel">
+<p><strong>強い点</strong></p>
+<p>truth-sensitive な中間表現が、大きめの Llama / Gemma 系モデルでかなり高精度に読める。さらに、見つけた方向へ activation を動かすと True / False 出力も変わるため、単なる相関特徴ではなく計算に使われている可能性がある。</p>
+</div>
+<div class="panel">
+<p><strong>注目点</strong></p>
+<p>residual stream 全体だけでなく、一部の attention head output にも truth signal が局所的に現れる。head-level の signal は場所が限られるぶん、steering したときに小さい介入でも出力へ効きやすい。</p>
+</div>
+<div class="panel">
+<p><strong>弱い点</strong></p>
+<p>Accuracy と Use は強いが、Coherence は中程度に留まる。特に negation や論理的 paraphrase では崩れやすく、truth-sensitive representation をそのまま安定した「信念」と読むには慎重さが必要になる。</p>
+</div>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>Paper 1 / Terms</p>
+</div>
+<section id="基準は信念らしさの別々の条件" class="level2">
+<h2>4基準は「信念らしさ」の別々の条件</h2>
+<p>この論文の Accuracy / Use / Coherence / Uniformity は、通常のモデル評価指標というより、 内部表現が belief-like と言えるための条件として使われている。日本語では次のように読むと説明しやすい。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">英語</th>
+<th style="text-align: left;">日本語での読み</th>
+<th style="text-align: left;">何を問うか</th>
+<th style="text-align: left;">実験での見方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Accuracy</td>
+<td style="text-align: left;">真偽分離性 / 分離精度「読めるか」</td>
+<td style="text-align: left;">内部表現が true input と false input を分けているか。</td>
+<td style="text-align: left;">最終トークン位置の内部ベクトルや attention head の出力から、ロジスティック回帰で真偽を当てる。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Use</td>
+<td style="text-align: left;">機能的使用 / 出力への関与 「使われて</td>
+<td style="text-align: left;">いるか」 読める truth signal が、実際にモデルの出力計算に使われているか。</td>
+<td style="text-align: left;">真偽を分ける方向へ内部ベクトルを少し動かし、True/False の出力確率が変わるかを見る。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Coherence</td>
+<td style="text-align: left;">整合性「矛盾しないか」</td>
+<td style="text-align: left;">p, not-p, p and q, p or q などの論理関係に対して一貫するか。</td>
+<td style="text-align: left;">否定・言い換え・連言・選言で真偽判定が崩れないか、疑似確率が基本的な確率制約を満たすかを見る。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Uniformity</td>
+<td style="text-align: left;">ドメイン一貫性「別領域にも通用するか</td>
+<td style="text-align: left;">」 都市・企業・数比較・翻訳など、異なる domain でも同じような truth direction が使えるか</td>
+<td style="text-align: left;">。 ある領域で作った真偽判定の手がかりが、別領域の真偽文にも通用するかを見る。</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section class="screen">
         <p class="kicker">Transformer Refresher 1</p>
         <h2>residual stream は、層をまたぐ共有の通路</h2>
         <p>
           ある1つの layer 出力時点で見る residual stream の形は
           <span class="shape-note">入力 token 数 x d_model</span>。
-          全 layer 分を解析用に保存すると <span class="shape-note">layer 数 x 入力 token 数 x d_model</span> になる。
-          `d_model` は token embedding と residual stream に共通する埋込次元数である。
+          <span class="shape-note">d_model</span> は token embedding の埋込次元数で、それらが layer ごとになっているので全体ではさらに <span class="shape-note">x layer 数</span>
         </p>
         <div class="diagram-block">
           <svg class="diagram-svg" viewBox="0 0 960 530" role="img" aria-labelledby="residual-title residual-desc">
@@ -762,7 +416,6 @@
             <path d="M498 427 H746" class="arrow-line"></path>
 
             <path d="M510 112 V444" fill="none" stroke="#9fb1bd" stroke-width="1.4" stroke-dasharray="5 6"></path>
-            <text x="520" y="307" class="caption">縦に積むと layer 数</text>
           </svg>
           <ul class="diagram-notes">
             <li><strong>読む</strong><br />Attention と MLP は、その時点の stream を入力として使う。</li>
@@ -771,8 +424,7 @@
           </ul>
         </div>
       </section>
-
-      <section class="screen">
+<section class="screen">
         <p class="kicker">Transformer Refresher 2</p>
         <h2>attention head は「どこを見るか」と「何を書くか」を分けて考える</h2>
         <div class="diagram-block">
@@ -800,36 +452,36 @@
             <text x="312" y="132" text-anchor="middle" class="small">どこを見るか</text>
             <path d="M188 107 H244" class="arrow-line"></path>
             <path d="M405 180 C365 176 350 150 331 156" class="arrow-line"></path>
-            <path d="M376 116 C424 118 450 143 467 158" class="arrow-line"></path>
+            <path d="M376 116 C478 112 561 119 651 133" class="arrow-line"></path>
 
             <rect x="248" y="252" width="128" height="80" class="box blue-fill"></rect>
             <text x="312" y="283" text-anchor="middle" class="label">OV</text>
             <text x="312" y="308" text-anchor="middle" class="small">何を書くか</text>
             <path d="M188 251 H244" class="arrow-line"></path>
-            <path d="M376 292 C426 292 455 253 475 236" class="write-line"></path>
+            <path d="M376 292 C470 292 560 292 651 292" class="write-line"></path>
 
             <rect x="655" y="90" width="230" height="86" class="box"></rect>
             <text x="770" y="124" text-anchor="middle" class="label">attention pattern</text>
-            <text x="770" y="149" text-anchor="middle" class="small">source token への重み</text>
-            <path d="M550 184 C596 165 617 141 651 133" class="arrow-line"></path>
+            <text x="770" y="149" text-anchor="middle" class="small">QK で得た参照重み</text>
+            <path d="M770 176 V242" class="arrow-line"></path>
 
             <rect x="655" y="246" width="230" height="88" class="box"></rect>
             <text x="770" y="279" text-anchor="middle" class="label">head output</text>
-            <text x="770" y="304" text-anchor="middle" class="small">stream へ加算される更新</text>
-            <path d="M550 212 C597 235 619 271 651 286" class="write-line"></path>
+            <text x="770" y="304" text-anchor="middle" class="small">重みづけた value の更新</text>
+            <text x="770" y="326" text-anchor="middle" class="small">destination の stream へ加算</text>
+            <path d="M655 286 C610 270 575 244 548 222" class="write-line"></path>
 
             <text x="48" y="390" class="caption">直感: head は、ある token 位置から別の token 位置へ、選んだ情報を運ぶ小さな読み書き部品。</text>
             <text x="48" y="417" class="caption">論文の head-level analysis は、この部品ごとに truth-sensitive な signal があるかを見る。</text>
           </svg>
           <ul class="diagram-notes">
-            <li><strong>QK</strong><br />query と key で、どの過去 token から読むかを決める。</li>
-            <li><strong>OV</strong><br />value と output で、読んだ内容をどう stream に書くかを決める。</li>
-            <li><strong>head 単位</strong><br />論文の probe は QK/OV を分解せず、head output 全体を読む。</li>
+            <li><strong>QK</strong><br />query と key の内積から attention pattern を作る部分。destination token が、どの source token をどれくらい参照するかを決める。</li>
+            <li><strong>OV</strong><br />source token の情報を value として取り出し、output projection で書き込み用のベクトルに変換する部分。QK が作った重みと合わせて、何を residual stream に足すかを決める。</li>
+            <li><strong>head 単位</strong><br />この論文の probe は QK/OV を個別に分解せず、attention head が最終的に書き込む head output 全体を見る。つまり「この head の更新に真偽情報が含まれるか」を調べる。</li>
           </ul>
         </div>
       </section>
-
-      <section class="screen">
+<section class="screen">
         <p class="kicker">5.1 Accuracy</p>
         <h2>Accuracy は、内部ベクトルから真偽ラベルを読めるか</h2>
         <div class="diagram-block">
@@ -865,7 +517,7 @@
             <text x="328" y="358" text-anchor="middle" class="caption">activation と対応づける</text>
 
             <rect x="550" y="276" width="244" height="88" class="box soft-fill"></rect>
-            <text x="672" y="309" text-anchor="middle" class="label">linear probe</text>
+            <text x="672" y="309" text-anchor="middle" class="label">logistic regression</text>
             <text x="672" y="335" text-anchor="middle" class="small">ベクトル → True / False</text>
             <text x="672" y="358" text-anchor="middle" class="caption">分類精度が Accuracy</text>
             <path d="M458 320 H546" class="write-line"></path>
@@ -880,730 +532,836 @@
           </ul>
         </div>
       </section>
-
-      <section class="flow">
-        <p class="kicker">5.1 Accuracy / Dataset</p>
-        <h2>約1.3万文の True/False 文から activation を集める</h2>
-        <p>
-          Accuracy 実験では Samuel Marks and Max Tegmark (2024), <em>The Geometry of Truth</em>
-          の True/False dataset を使う。文だけを LLM に入力し、final token 位置の
-          residual stream / head output を取り出す。True/False ラベルは後から
-          linear probe の教師ラベルとして使う。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>domain</th>
-              <th>文数</th>
-              <th>例文</th>
-              <th>label</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Cities</td>
-              <td>1,496</td>
-              <td>The city of Hangzhou is in China.</td>
-              <td>True</td>
-            </tr>
-            <tr>
-              <td>Common Claims</td>
-              <td>4,450</td>
-              <td>Wild monkeys groom each other’s hair as a social activity.</td>
-              <td>True</td>
-            </tr>
-            <tr>
-              <td>Companies</td>
-              <td>1,200</td>
-              <td>Barclays has headquarters in Russia.</td>
-              <td>False</td>
-            </tr>
-            <tr>
-              <td>Larger</td>
-              <td>1,980</td>
-              <td>Fifty-six is larger than fifty-three.</td>
-              <td>True</td>
-            </tr>
-            <tr>
-              <td>Smaller</td>
-              <td>1,980</td>
-              <td>Sixty-five is smaller than eighty-seven.</td>
-              <td>True</td>
-            </tr>
-            <tr>
-              <td>Sp_En_Trans</td>
-              <td>354</td>
-              <td>The Spanish word ‘madre’ means ‘mother’.</td>
-              <td>True</td>
-            </tr>
-            <tr>
-              <td>Counterfact</td>
-              <td>2,000</td>
-              <td>Klemens von Metternich’s profession is an actor.</td>
-              <td>False</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          合計は約13,460文。Accuracy では半分を Use 実験用に予約し、残り半分で probe を訓練・評価する。
-          1文につき、各 layer の final-token residual vector と、各 layer・各 head の final-token head output を読む。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">5.1 Accuracy / Results</p>
-        <h2>Llama / Gemma 系では真偽を高精度に読める</h2>
-        <p>
-          層や head の強さは、probe の重みの大きさではなく、その layer / head の activation だけで
-          True/False を分類した test accuracy で見る。本文では residual stream の Top-3 probe accuracy と、
-          head-level の傾向が報告されている。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>モデル</th>
-              <th>本文での residual probe accuracy</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>GPT-2 Large</td>
-              <td>0.567</td>
-              <td>ほぼ chance に近く、truth-sensitive encoding は弱い。</td>
-            </tr>
-            <tr>
-              <td>Yi</td>
-              <td>0.630</td>
-              <td>読めるが弱い。</td>
-            </tr>
-            <tr>
-              <td>Pythia</td>
-              <td>0.721</td>
-              <td>中程度に読める。</td>
-            </tr>
-            <tr>
-              <td>Llama</td>
-              <td>0.889</td>
-              <td>高精度に読める。</td>
-            </tr>
-            <tr>
-              <td>Gemma</td>
-              <td>0.920</td>
-              <td>非常に高精度に読める。</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>モデル</th>
-              <th>Residual</th>
-              <th>Heads</th>
-              <th>補足</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>GPT-J</td>
-              <td>0.799</td>
-              <td>0.718</td>
-              <td>上位5 activation 平均。以後の実験では baseline 的に扱われる。</td>
-            </tr>
-            <tr>
-              <td>Llama</td>
-              <td>0.895</td>
-              <td>0.857</td>
-              <td>residual stream からも強く読める。</td>
-            </tr>
-            <tr>
-              <td>Llama Instruct</td>
-              <td>0.882</td>
-              <td>0.899</td>
-              <td>instruction tuning 後も head-level signal が強い。</td>
-            </tr>
-            <tr>
-              <td>Gemma</td>
-              <td>0.916</td>
-              <td>0.911</td>
-              <td>residual / heads がほぼ同程度。</td>
-            </tr>
-            <tr>
-              <td>Gemma Instruct</td>
-              <td>0.923</td>
-              <td>0.925</td>
-              <td>head-level でも非常に高い。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          residual stream 全体からも True/False は読める。ただし全 head が同じではない。
-          一部の layer・head output に truth signal が局所的に現れるため、5.2 Use ではそこを steering 対象にする。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">5.2 Use</p>
-        <h2>読める truth direction は、出力も動かせるのか</h2>
-        <p>
-          Accuracy は「内部から真偽を読めるか」だった。Use は一歩進んで、Accuracy で見つけた
-          truth-sensitive direction に沿って activation を steering し、モデルの True/False 出力が
-          実際に変わるかを見る。
-        </p>
-        <div class="axis">
-          <div class="panel">
-            <strong>1. direction を作る</strong>
-            <p>True 文の activation 平均と False 文の activation 平均の差を取る。</p>
-            <pre><code>truth direction
+<section class="flow">
+<div class="kicker">
+<p>5.1 Accuracy / Dataset</p>
+</div>
+<section id="約1.3万文の-truefalse-文から-activation-を集める" class="level2">
+<h2>約1.3万文の True/False 文から activation を集める</h2>
+<p>Accuracy 実験では Samuel Marks and Max Tegmark (2024), <em>The Geometry of Truth</em> の True/False dataset を使う。文だけを LLM に入力し、final token 位置の residual stream / head output を取り出す。True/False ラベルは後から linear probe の教師ラベルとして使う。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">domain</th>
+<th style="text-align: left;">文数</th>
+<th style="text-align: left;">例文</th>
+<th style="text-align: left;">label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Cities</td>
+<td style="text-align: left;">1,496</td>
+<td style="text-align: left;">The city of Hangzhou is in China.</td>
+<td style="text-align: left;">True</td>
+</tr>
+<tr>
+<td style="text-align: left;">Common Claims</td>
+<td style="text-align: left;">4,450</td>
+<td style="text-align: left;">Wild monkeys groom each other’s hair as a social activity.</td>
+<td style="text-align: left;">True</td>
+</tr>
+<tr>
+<td style="text-align: left;">Companies</td>
+<td style="text-align: left;">1,200</td>
+<td style="text-align: left;">Barclays has headquarters in Russia.</td>
+<td style="text-align: left;">False</td>
+</tr>
+<tr>
+<td style="text-align: left;">Larger</td>
+<td style="text-align: left;">1,980</td>
+<td style="text-align: left;">Fifty-six is larger than fifty-three.</td>
+<td style="text-align: left;">True</td>
+</tr>
+<tr>
+<td style="text-align: left;">Smaller</td>
+<td style="text-align: left;">1,980</td>
+<td style="text-align: left;">Sixty-five is smaller than eighty-seven.</td>
+<td style="text-align: left;">True</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sp_En_Trans</td>
+<td style="text-align: left;">354</td>
+<td style="text-align: left;">The Spanish word ‘madre’ means ‘mother’.</td>
+<td style="text-align: left;">True</td>
+</tr>
+<tr>
+<td style="text-align: left;">Counterfact</td>
+<td style="text-align: left;">2,000</td>
+<td style="text-align: left;">Klemens von Metternich’s profession is an actor.</td>
+<td style="text-align: left;">False</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>合計は約13,460文。Accuracy では半分を Use 実験用に予約し、残り半分で probe を訓練・評価する。 1文につき、各 layer の final-token residual vector と、各 layer・各 head の final-token head output を読む。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.1 Accuracy / Results</p>
+</div>
+<section id="llama-gemma-系では真偽を高精度に読める" class="level2">
+<h2>Llama / Gemma 系では真偽を高精度に読める</h2>
+<p>層や head の強さは、probe の重みの大きさではなく、その layer / head の activation だけで True/False を分類した test accuracy で見る。本文では residual stream の Top-3 probe accuracy と、 head-level の傾向が報告されている。</p>
+<p>下の <code>Heads</code> は multi-head 全体を結合した分類器ではない。各 layer/head を個別に probe し、成績の高い上位5個を平均した探索的な集約である。head 位置を別データで事前固定してから評価したスコアではないので、モデル全体の汎化性能としては強めに出る。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">モデル</th>
+<th style="text-align: left;">本文での residual probe accuracy</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GPT-2 Large</td>
+<td style="text-align: left;">0.567</td>
+<td style="text-align: left;">ほぼ chance に近く、truth-sensitive encoding は弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Yi</td>
+<td style="text-align: left;">0.630</td>
+<td style="text-align: left;">読めるが弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Pythia</td>
+<td style="text-align: left;">0.721</td>
+<td style="text-align: left;">中程度に読める。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Llama</td>
+<td style="text-align: left;">0.889</td>
+<td style="text-align: left;">高精度に読める。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma</td>
+<td style="text-align: left;">0.920</td>
+<td style="text-align: left;">非常に高精度に読める。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">モデル</th>
+<th style="text-align: left;">Residual</th>
+<th style="text-align: left;">Heads</th>
+<th style="text-align: left;">補足</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">GPT-J</td>
+<td style="text-align: left;">0.799</td>
+<td style="text-align: left;">0.718</td>
+<td style="text-align: left;">上位5 activation 平均。以後の実験では baseline 的に扱われる。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Llama</td>
+<td style="text-align: left;">0.895</td>
+<td style="text-align: left;">0.857</td>
+<td style="text-align: left;">residual stream からも強く読める。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Llama Instruct</td>
+<td style="text-align: left;">0.882</td>
+<td style="text-align: left;">0.899</td>
+<td style="text-align: left;">instruction tuning 後も head-level signal が強い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma</td>
+<td style="text-align: left;">0.916</td>
+<td style="text-align: left;">0.911</td>
+<td style="text-align: left;">residual / heads がほぼ同程度。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma Instruct</td>
+<td style="text-align: left;">0.923</td>
+<td style="text-align: left;">0.925</td>
+<td style="text-align: left;">head-level でも非常に高い。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>residual stream 全体からも True/False は読める。ただし全 head が同じではない。 一部の layer・head output に truth signal が局所的に現れるため、5.2 Use ではそこを steering 対象にする。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.2 Use</p>
+</div>
+<section id="読める-truth-direction-は出力も動かせるのか" class="level2">
+<h2>読める truth direction は、出力も動かせるのか</h2>
+<p>Accuracy は「内部から真偽を読めるか」だった。Use は一歩進んで、Accuracy で見つけた truth-sensitive direction に沿って activation を steering し、モデルの True/False 出力が 実際に変わるかを見る。</p>
+<div class="axis">
+<div class="panel">
+<p><strong>1. direction を作る</strong></p>
+<p>True 文の activation 平均と False 文の activation 平均の差を取る。</p>
+<pre><code>truth direction
 = mean(True activations)
 - mean(False activations)</code></pre>
-          </div>
-          <div class="arrow">→</div>
-          <div class="panel">
-            <strong>2. activation を動かす</strong>
-            <p>上位 K 個の truth-sensitive layer / head output に方向ベクトルを足す。</p>
-            <pre><code>activation'
+</div>
+<div class="arrow">
+<p>→</p>
+</div>
+<div class="panel">
+<p><strong>2. activation を動かす</strong></p>
+<p>上位 K 個の truth-sensitive layer / head output に方向ベクトルを足す。</p>
+<pre><code>activation&#39;
 = activation
 + alpha * direction</code></pre>
-          </div>
-        </div>
-        <p class="note">
-          目的は「わざと間違った truth-value answer を引き出せるか」。False → True と True → False
-          の両方向で、正解 token と不正解 token の確率が介入前後でどう動くかを見る。
-        </p>
-      </section>
-
-
-      <section class="flow">
-        <p class="kicker">5.2 Use / Results</p>
-        <h2>head steering は小さい介入で効きやすい</h2>
-        <p>
-          Llama / Gemma 系では steering が概ね成功し、GPT-J は反応が弱い。instruction-tuned models は
-          base models より steering sensitivity が大きく、attention head への介入は residual stream より
-          小さい intervention strength で効果を出しやすい。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>model</th>
-              <th>direction</th>
-              <th>Residual effect</th>
-              <th>Head effect</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Llama Instruct</td>
-              <td>False → True</td>
-              <td>1.23</td>
-              <td>1.23</td>
-              <td>どちらも強く出力を動かす。</td>
-            </tr>
-            <tr>
-              <td>Llama Instruct</td>
-              <td>True → False</td>
-              <td>0.90</td>
-              <td>1.23</td>
-              <td>head 側も強い。</td>
-            </tr>
-            <tr>
-              <td>Gemma Instruct</td>
-              <td>False → True</td>
-              <td>0.54</td>
-              <td>0.87</td>
-              <td>head steering の効果が大きい。</td>
-            </tr>
-            <tr>
-              <td>Gemma Instruct</td>
-              <td>True → False</td>
-              <td>1.07</td>
-              <td>1.48</td>
-              <td>head steering が最も強い。</td>
-            </tr>
-            <tr>
-              <td>GPT-J</td>
-              <td>False → True</td>
-              <td>0.05</td>
-              <td>0.05</td>
-              <td>ほぼ動かない。</td>
-            </tr>
-            <tr>
-              <td>GPT-J</td>
-              <td>True → False</td>
-              <td>0.20</td>
-              <td>0.09</td>
-              <td>弱い baseline 的な挙動。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          解釈: truth-sensitive direction は単に probe で読めるだけではなく、少なくともこの True/False
-          出力設定では downstream computation に機能的に関与している可能性がある。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">5.3 Coherence</p>
-        <h2>真偽を読めても、論理的に一貫するとは限らない</h2>
-        <p>
-          Coherence は、truth-sensitive representation が否定・連言・選言に対してどれくらい整合的かを見る。
-          belief-like と言うなら、少なくとも p と not-p を同時に強く true っぽく表現していては困る。
-        </p>
-        <div class="two-col">
-          <div class="panel">
-            <strong>logical coherence</strong>
-            <p>元の True/False 文から negation, conjunction, disjunction を作り、probe が分類できるかを見る。</p>
-            <pre><code>p: Hangzhou is in China.
+</div>
+</div>
+<div class="note">
+<p>目的は「わざと間違った truth-value answer を引き出せるか」。False → True と True → False の両方向で、正解 token と不正解 token の確率が介入前後でどう動くかを見る。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.2 Use / Results</p>
+</div>
+<section id="head-steering-は小さい介入で効きやすい" class="level2">
+<h2>head steering は小さい介入で効きやすい</h2>
+<p>Llama / Gemma 系では steering が概ね成功し、GPT-J は反応が弱い。instruction-tuned models は base models より steering sensitivity が大きい。attention head への介入は、残差ストリームへの介入より小さい正規化強度で効果を出しやすい、というのがこのスライドの読みどころである。</p>
+<div class="note">
+<p><code>K</code> と <code>α</code> は固定値ではなく、モデル・介入対象・方向ごとに grid search で選ばれている。論文では <code>E/S</code> が大きくなる設定を選び、Table 2 に <code>|α|</code> と <code>K</code> を報告している。</p>
+</div>
+<div class="axis">
+<div class="panel">
+<p><strong>Residual stream への介入</strong></p>
+<p>layer ごとの残差ストリームに、真偽方向を足す。</p>
+<pre><code>r(l)&#39; = r(l) + alpha * theta_l</code></pre>
+<p>実際には全 layer ではなく、truth-sensitive な上位 <code>K</code> layer だけに足す。</p>
+</div>
+<div class="arrow">
+<p>→</p>
+</div>
+<div class="panel">
+<p><strong>Head output への介入</strong></p>
+<p>layer/head ごとの head output に、真偽方向を足す。</p>
+<pre><code>h(l,i)&#39; = h(l,i) + alpha * theta_(l,i)</code></pre>
+<p>こちらも全 head ではなく、truth-sensitive な上位 <code>K</code> head だけに足す。</p>
+</div>
+</div>
+<div class="compact-table data-table">
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>model</th>
+<th style="text-align: right;">False→True Residual</th>
+<th style="text-align: right;">False→True Heads</th>
+<th style="text-align: right;">True→False Residual</th>
+<th style="text-align: right;">True→False Heads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Llama</td>
+<td style="text-align: right;"><code>α=9, K=1</code></td>
+<td style="text-align: right;"><code>α=3, K=40</code></td>
+<td style="text-align: right;"><code>α=6, K=1</code></td>
+<td style="text-align: right;"><code>α=9, K=1</code></td>
+</tr>
+<tr>
+<td>Llama Instruct</td>
+<td style="text-align: right;"><code>α=3, K=7</code></td>
+<td style="text-align: right;"><code>α=2, K=20</code></td>
+<td style="text-align: right;"><code>α=5, K=2</code></td>
+<td style="text-align: right;"><code>α=3, K=10</code></td>
+</tr>
+<tr>
+<td>Gemma</td>
+<td style="text-align: right;"><code>α=31, K=7</code></td>
+<td style="text-align: right;"><code>α=12, K=15</code></td>
+<td style="text-align: right;"><code>α=33, K=22</code></td>
+<td style="text-align: right;"><code>α=10, K=60</code></td>
+</tr>
+<tr>
+<td>Gemma Instruct</td>
+<td style="text-align: right;"><code>α=30, K=16</code></td>
+<td style="text-align: right;"><code>α=10, K=65</code></td>
+<td style="text-align: right;"><code>α=30, K=26</code></td>
+<td style="text-align: right;"><code>α=14, K=25</code></td>
+</tr>
+<tr>
+<td>GPT-J</td>
+<td style="text-align: right;"><code>α=15, K=4</code></td>
+<td style="text-align: right;"><code>α=2, K=5</code></td>
+<td style="text-align: right;"><code>α=30, K=15</code></td>
+<td style="text-align: right;"><code>α=10, K=50</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">direction</th>
+<th style="text-align: left;">Residual effect</th>
+<th style="text-align: left;">Head effect</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Llama Instruct</td>
+<td style="text-align: left;">False → True</td>
+<td style="text-align: left;">1.23</td>
+<td style="text-align: left;">1.23</td>
+<td style="text-align: left;">どちらも強く出力を動かす。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Llama Instruct</td>
+<td style="text-align: left;">True → False</td>
+<td style="text-align: left;">0.90</td>
+<td style="text-align: left;">1.23</td>
+<td style="text-align: left;">head 側も強い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma Instruct</td>
+<td style="text-align: left;">False → True</td>
+<td style="text-align: left;">0.54</td>
+<td style="text-align: left;">0.87</td>
+<td style="text-align: left;">head steering の効果が大きい。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma Instruct</td>
+<td style="text-align: left;">True → False</td>
+<td style="text-align: left;">1.07</td>
+<td style="text-align: left;">1.48</td>
+<td style="text-align: left;">head steering が最も強い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPT-J</td>
+<td style="text-align: left;">False → True</td>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">ほぼ動かない。</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPT-J</td>
+<td style="text-align: left;">True → False</td>
+<td style="text-align: left;">0.20</td>
+<td style="text-align: left;">0.09</td>
+<td style="text-align: left;">弱い baseline 的な挙動。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>解釈: truth-sensitive direction は単に probe で読めるだけではなく、少なくともこの True/False 出力設定では出力計算に機能的に関与している可能性がある。ただし <code>K/α</code> は探索で選ばれているため、「自然にこの個数だけ介入すればよい」という結果ではなく、truth-sensitive な場所を動かすとどれくらい効率よく出力が変わるかを見る実験として読む。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.3 Coherence</p>
+</div>
+<section id="真偽を読めても論理的に一貫するとは限らない" class="level2">
+<h2>真偽を読めても、論理的に一貫するとは限らない</h2>
+<p>Coherence は、truth-sensitive representation が否定・連言・選言に対してどれくらい整合的かを見る。 belief-like と言うなら、少なくとも p と not-p を同時に強く true っぽく表現していては困る。</p>
+<div class="two-col">
+<div class="panel">
+<p><strong>logical coherence</strong></p>
+<p>元の True/False 文から negation, conjunction, disjunction を作り、probe が分類できるかを見る。</p>
+<pre><code>p: Hangzhou is in China.
 not p: Hangzhou is not in China.
 p and q
 p or q</code></pre>
-          </div>
-          <div class="panel">
-            <strong>probabilistic coherence</strong>
-            <p>probe の連続出力を疑似確率として読み、確率的な制約を満たすかを見る。</p>
-            <pre><code>P(p) + P(not p) ≈ 1
+</div>
+<div class="panel">
+<p><strong>probabilistic coherence</strong></p>
+<p>probe の連続出力を疑似確率として読み、確率的な制約を満たすかを見る。</p>
+<pre><code>P(p) + P(not p) ≈ 1
 P(p and q) &lt;= P(p)
 P(p) &lt;= P(p or q)</code></pre>
-          </div>
-        </div>
-        <p class="note warn">
-          ここは本論文の慎重に読むべき部分。Accuracy と Use は強いが、Coherence は中程度で、特に negation が弱い。
-        </p>
-      </section>
-
-
-      <section class="flow">
-        <p class="kicker">5.3 Coherence / Results</p>
-        <h2>Coherence は中程度、negation が弱い</h2>
-        <p>
-          logical task では全体として中程度の coherence が見られる。ただし Common Claims の negated
-          statements で linear probes の accuracy が落ちる。probabilistic experiment では、calibrated
-          logistic regression probes が self-report や logits より coherent な probability を出す場合がある。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>model</th>
-              <th>negated common claims accuracy</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Llama</td>
-              <td>0.51</td>
-              <td>ほぼ chance。</td>
-            </tr>
-            <tr>
-              <td>Llama Instruct</td>
-              <td>0.59</td>
-              <td>少し改善するが弱い。</td>
-            </tr>
-            <tr>
-              <td>Gemma</td>
-              <td>0.56</td>
-              <td>弱い。</td>
-            </tr>
-            <tr>
-              <td>Gemma Instruct</td>
-              <td>0.67</td>
-              <td>相対的には良いが十分強くはない。</td>
-            </tr>
-            <tr>
-              <td>GPT-J</td>
-              <td>0.44</td>
-              <td>chance 未満。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          truth direction はあるが、線形 probe だけでは generalized negation を安定して扱えない。
-          情報抽出では negation、条件、absent/null、unsupported inference に注意が必要になる。
-        </p>
-      </section>
-
-
-      <section class="flow">
-        <p class="kicker">5.4 Uniformity / Results</p>
-        <h2>多様な domain で訓練すると、truth direction は一般化する</h2>
-        <p>
-          結果は residual level と head level の両方で強い。特に複数 domain を含む大きな訓練セットでは、
-          各 test domain への平均 accuracy が高く、worst domain でも chance を上回る。
-          instruction-tuned models は base models より cross-domain consistency が高い傾向がある。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>train set</th>
-              <th>model</th>
-              <th>average / worst test acc.</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>large multi-domain</td>
-              <td>Llama</td>
-              <td>0.87 / 0.74</td>
-              <td>平均も worst も高く、domain 専用方向ではなさそう。</td>
-            </tr>
-            <tr>
-              <td>large multi-domain</td>
-              <td>Llama Instruct</td>
-              <td>0.87 / 0.72</td>
-              <td>base と同程度に強い。</td>
-            </tr>
-            <tr>
-              <td>large multi-domain</td>
-              <td>Gemma</td>
-              <td>0.88 / 0.68</td>
-              <td>平均は高いが、弱い domain は残る。</td>
-            </tr>
-            <tr>
-              <td>large multi-domain</td>
-              <td>Gemma Instruct</td>
-              <td>0.90 / 0.74</td>
-              <td>この設定では最も安定。</td>
-            </tr>
-            <tr>
-              <td>Common Claims only</td>
-              <td>Llama / Llama Instruct</td>
-              <td>0.64 / 0.57, 0.75 / 0.58</td>
-              <td>汎用文だけでも一部 generalize するが、worst は弱い。</td>
-            </tr>
-            <tr>
-              <td>Common Claims only</td>
-              <td>Gemma / Gemma Instruct</td>
-              <td>0.75 / 0.66, 0.77 / 0.50</td>
-              <td>平均は良いが、domain によって崩れる。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          literal / factual な True/False 文に限れば、truth signal は domain-robust。
-          ただし皮肉・比喩・語用論的転用のように、文脈で命題内容が変わるケースまでは検査していない。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Paper 2</p>
-        <h2>Thinking Out Loud</h2>
-        <p class="lead">
-          reasoning model は高性能になっただけでなく、自分の正誤もよりよく分かるのか。
-          verbalized confidence と `I don't know` の挙動から評価する。
-        </p>
-        <div class="three-col">
-          <div class="panel">
-            <strong>reasoning-heavy tasks</strong>
-            reasoning SFT と reasoning RL は accuracy と calibration を改善する。
-          </div>
-          <div class="panel">
-            <strong>factuality</strong>
-            小規模 reasoning model は `I don't know` が減り、知識境界の認識が弱まる可能性がある。
-          </div>
-          <div class="panel">
-            <strong>注意点</strong>
-            推論能力の向上は、自己認識や abstention 能力の向上と同じではない。
-          </div>
-        </div>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Paper 2 / Post-training</p>
-        <h2>比較軸は post-training</h2>
-        <p>
-          この論文のモデル選定は、モデルを広く並べるというより、pretraining 後にどんな訓練を足したかを見る設計である。
-          同じくらいのサイズや近い系列で、Instruct、SFT reasoning、RL reasoning を比べる。
-        </p>
-        <div class="axis">
-          <div class="panel">
-            <strong>pretrained base</strong>
-            <p>大量テキストで next-token prediction を学習した土台。ここだけでは、指示追従や confidence 表明は安定しにくい。</p>
-          </div>
-          <div class="arrow">→</div>
-          <div class="panel">
-            <strong>post-training</strong>
-            <p>SFT や RL で、指示追従、長い reasoning chain、自己反省的な振る舞い、alignment を後から強める。</p>
-          </div>
-        </div>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>post-training の種類</th>
-              <th>訓練のイメージ</th>
-              <th>代表モデル</th>
-              <th>この論文での関心</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>general instruction / alignment</td>
-              <td>ユーザー指示に従う、答えの形式を守る、安全性や有用性を高める。</td>
-              <td>Qwen2.5-14B/32B-Instruct, DeepSeek-V3</td>
-              <td>通常の instruct model は confidence calibration の基準線になる。</td>
-            </tr>
-            <tr>
-              <td>reasoning SFT</td>
-              <td>長い chain-of-thought や reasoning trace を真似る。</td>
-              <td>DeepSeek-R1-Distill-Qwen-14B/32B</td>
-              <td>推論能力だけでなく、verbalized confidence もよくなるか。</td>
-            </tr>
-            <tr>
-              <td>reasoning RL</td>
-              <td>結果の良さを報酬にして、探索・検算・反省的 reasoning を強める。</td>
-              <td>DeepCoder-14B, Skywork-OR1-32B, DeepSeek-R1</td>
-              <td>SFT よりさらに confidence と correctness の対応が改善するか。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          ここでの関心は「どの事前学習モデルが confidence 表明を得意とするか」ではない。
-          post-training が confidence 表明にどう効くかを見る。
-        </p>
-      </section>
-
-      <section class="flow">
-        <p class="kicker">Paper 2 / Prompting 1</p>
-        <h2>confidence は、出力として言わせて測る</h2>
-        <p>
-          この論文は内部 activation を読まず、モデルに回答と confidence を XML 形式で出させる。
-          その confidence と実際の正誤がどれくらい合うかを ECE / ACE / AUROC / AUPRC で測る。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>prompting strategy</th>
-              <th>confidence の出させ方</th>
-              <th>例</th>
-              <th>狙い</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Vanilla CoT</td>
-              <td>step-by-step で解かせ、最後に 0%--100% の confidence score を出させる。</td>
-              <td>`&lt;confidence&gt;80%&lt;/confidence&gt;`</td>
-              <td>通常の verbalized confidence の基準線。</td>
-            </tr>
-            <tr>
-              <td>Vanilla CoT w. Prob</td>
-              <td>同じく解かせるが、confidence を 0.0--1.0 の probability score として出させる。</td>
-              <td>`&lt;confidence&gt;0.8&lt;/confidence&gt;`</td>
-              <td>確率値として聞くと calibration が改善するという先行研究を確認する。</td>
-            </tr>
-            <tr>
-              <td>Self-reflection</td>
-              <td>1回目で回答を出させ、2回目でその problem と solution を見せて confidence だけを評価させる。</td>
-              <td>`solution` を再読して `&lt;confidence&gt;80%&lt;/confidence&gt;`</td>
-              <td>一度答えたあとに自己評価させると、正誤認識が改善するかを見る。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          ここで測っているのは「内部に truth signal があるか」ではない。モデルが外に出した
-          confidence が empirical accuracy と合うかである。
-        </p>
-      </section>
-
-
-      <section class="flow">
-        <p class="kicker">Paper 2 / Results 1</p>
-        <h2>reasoning-heavy tasks では、推論訓練で accuracy も calibration も改善</h2>
-        <p>
-          AIME や LiveBench-Reasoning では、Instruct から SFT reasoning へ進むと accuracy が大きく上がり、
-          ECE も下がる。さらに RL reasoning は、SFT 後に calibration / failure prediction を追加で改善する傾向がある。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>比較</th>
-              <th>task</th>
-              <th>Acc ↑</th>
-              <th>ECE ↓</th>
-              <th>AUROC ↑</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Qwen2.5-14B Instruct</td>
-              <td>AIME</td>
-              <td>11.3%</td>
-              <td>0.760</td>
-              <td>0.670</td>
-              <td>低精度かつ過信寄り。</td>
-            </tr>
-            <tr>
-              <td>R1-Distill-Qwen-14B</td>
-              <td>AIME</td>
-              <td>46.7%</td>
-              <td>0.342</td>
-              <td>0.847</td>
-              <td>SFT reasoning で大きく改善。</td>
-            </tr>
-            <tr>
-              <td>DeepCoder-14B</td>
-              <td>AIME</td>
-              <td>57.7%</td>
-              <td>0.222</td>
-              <td>0.873</td>
-              <td>RL reasoning でさらに calibration が良い。</td>
-            </tr>
-            <tr>
-              <td>Qwen2.5-32B Instruct</td>
-              <td>LiveBench</td>
-              <td>42.7%</td>
-              <td>0.472</td>
-              <td>0.556</td>
-              <td>難しい reasoning では confidence が弱い。</td>
-            </tr>
-            <tr>
-              <td>R1-Distill-Qwen-32B</td>
-              <td>LiveBench</td>
-              <td>73.3%</td>
-              <td>0.152</td>
-              <td>0.777</td>
-              <td>SFT reasoning で精度・較正とも改善。</td>
-            </tr>
-            <tr>
-              <td>Skywork-32B</td>
-              <td>LiveBench</td>
-              <td>84.7%</td>
-              <td>0.074</td>
-              <td>0.876</td>
-              <td>RL reasoning が最も良い。</td>
-            </tr>
-            <tr>
-              <td>DeepSeek-V3 → R1</td>
-              <td>LiveBench</td>
-              <td>50.0% → 89.3%</td>
-              <td>0.389 → 0.081</td>
-              <td>0.696 → 0.908</td>
-              <td>大規模 RL reasoning で強い改善。</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note">
-          reasoning-heavy な問題では、長く考えられるようにする訓練は性能だけでなく
-          verbalized confidence の信頼性も改善しやすい。
-        </p>
-      </section>
-
-
-      <section class="flow">
-        <p class="kicker">Paper 2 / Results 2</p>
-        <h2>factuality では、reasoning model が「分からない」と言いにくくなる</h2>
-        <p>
-          SimpleQA / FreshQA では、reasoning models は `I don't know` に相当する not attempted response を大きく減らす。
-          しかし、小規模モデルでは accuracy が十分に上がらず、むしろ calibration が悪化する場合がある。
-        </p>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>比較枠</th>
-              <th>not attempted: Instruct</th>
-              <th>SFT reasoning</th>
-              <th>RL reasoning</th>
-              <th>読み方</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>14B family</td>
-              <td>1136</td>
-              <td>102</td>
-              <td>103</td>
-              <td>reasoning 化で abstention が激減。</td>
-            </tr>
-            <tr>
-              <td>32B family</td>
-              <td>2492</td>
-              <td>76</td>
-              <td>63</td>
-              <td>より大きいモデルでも同じ傾向。</td>
-            </tr>
-            <tr>
-              <td>DeepSeek family</td>
-              <td>480</td>
-              <td>-</td>
-              <td>81</td>
-              <td>14B/32B とサイズを揃えた比較ではなく、V3/R1 の別枠比較。</td>
-            </tr>
-          </tbody>
-        </table>
-        <table class="compact-table">
-          <thead>
-            <tr>
-              <th>比較枠</th>
-              <th>Shared attempted<br />Instruct も LRM も答えた問題</th>
-              <th>Only LRMs attempted<br />Instruct は避け、LRM だけ答えた問題</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>14B family</td>
-              <td>× Acc は下がり、ECE は悪化<br />Instruct 12.5% / 0.598<br />SFT 10.5% / 0.692, RL 9.98% / 0.684</td>
-              <td>× 追加で答えてもほぼ当たらない<br />SFT 2.37% / 0.718, RL 2.75% / 0.690</td>
-            </tr>
-            <tr>
-              <td>32B family</td>
-              <td>△ Acc は横ばい、ECE は悪化<br />Instruct 17.4% / 0.591<br />SFT 17.5% / 0.640, RL 17.1% / 0.600</td>
-              <td>× 追加で答えてもほぼ当たらない<br />SFT 3.7% / 0.717, RL 3.23% / 0.653</td>
-            </tr>
-            <tr>
-              <td>DeepSeek family</td>
-              <td>○ R1 は V3 より Acc / ECE とも改善<br />V3 27.5% / 0.496<br />R1 34.6% / 0.317</td>
-              <td>△ R1 は追加問題も多少当てるが難しい<br />R1 11.4% / 0.371</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note warn">
-          reasoning は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Working Hypothesis</p>
-        <h2>内部信号があっても、外にうまく出るとは限らない</h2>
-        <div class="axis">
-          <div class="panel">
-            <strong>内部</strong>
-            LLM は truth-sensitive な表現を持ちうる。
-            ただしそれは局所的で、論理的に完全に coherent とは限らない。
-          </div>
-          <div class="arrow">→</div>
-          <div class="panel">
-            <strong>外部</strong>
-            モデルが言う confidence はタスク・訓練・prompt に依存する。
-            factuality では過信や非 abstention が問題になる。
-          </div>
-        </div>
-        <p class="note warn">
-          true/false の内部表現、confidence の自己申告、abstention の行動は別物である。
-          「モデルが何かを内部に持つ」ことと「それをこちらが使える形で出す」ことは分けて考える。
-        </p>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Questions</p>
-        <h2>読むときの問い</h2>
-        <ol>
-          <li>`belief-like` と `confidence` は、どの程度同じ問題を見ているのか。</li>
-          <li>内部の truth direction は、外部の confidence や abstention に接続できるのか。</li>
-          <li>Coherence が弱いなら、どんな命題で危なくなるのか。</li>
-          <li>reasoning model の `I don't know` 減少は、抽出タスクの hallucination と同型か。</li>
-          <li>confidence を数値で聞く以外に、どの出力設計がありうるか。</li>
-        </ol>
-      </section>
-
-      <section class="screen">
-        <p class="kicker">Expected Takeaway</p>
-        <h2>今日のまとめ</h2>
-
-      </section>
-
-
+</div>
+</div>
+<div class="note warn">
+<p>ここは本論文の慎重に読むべき部分。Accuracy と Use は強いが、Coherence は中程度で、特に negation が弱い。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.3 Coherence / Results</p>
+</div>
+<section id="coherence-は中程度negation-が弱い" class="level2">
+<h2>Coherence は中程度、negation が弱い</h2>
+<p>logical task では全体として中程度の coherence が見られる。ただし Common Claims の negated statements で linear probes の accuracy が落ちる。probabilistic experiment では、calibrated logistic regression probes が self-report や logits より coherent な probability を出す場合がある。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">negated common claims accuracy</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Llama</td>
+<td style="text-align: left;">0.51</td>
+<td style="text-align: left;">ほぼ chance。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Llama Instruct</td>
+<td style="text-align: left;">0.59</td>
+<td style="text-align: left;">少し改善するが弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma</td>
+<td style="text-align: left;">0.56</td>
+<td style="text-align: left;">弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Gemma Instruct</td>
+<td style="text-align: left;">0.67</td>
+<td style="text-align: left;">相対的には良いが十分強くはない。</td>
+</tr>
+<tr>
+<td style="text-align: left;">GPT-J</td>
+<td style="text-align: left;">0.44</td>
+<td style="text-align: left;">chance 未満。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note warn">
+<p>truth direction はあるが、線形 probe だけでは generalized negation を安定して扱えない。 情報抽出では negation、条件、absent/null、unsupported inference に注意が必要になる。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>5.4 Uniformity / Results</p>
+</div>
+<section id="多様な-domain-で訓練するとtruth-direction-は一般化する" class="level2">
+<h2>多様な domain で訓練すると、truth direction は一般化する</h2>
+<p>結果は residual level と head level の両方で強い。特に複数 domain を含む大きな訓練セットでは、 各 test domain への平均 accuracy が高く、worst domain でも chance を上回る。 instruction-tuned models は base models より cross-domain consistency が高い傾向がある。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">train set</th>
+<th style="text-align: left;">model</th>
+<th style="text-align: left;">average / worst test acc.</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">large multi-domain</td>
+<td style="text-align: left;">Llama</td>
+<td style="text-align: left;">0.87 / 0.74</td>
+<td style="text-align: left;">平均も worst も高く、domain 専用方向ではなさそう。</td>
+</tr>
+<tr>
+<td style="text-align: left;">large multi-domain</td>
+<td style="text-align: left;">Llama Instruct</td>
+<td style="text-align: left;">0.87 / 0.72</td>
+<td style="text-align: left;">base と同程度に強い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">large multi-domain</td>
+<td style="text-align: left;">Gemma</td>
+<td style="text-align: left;">0.88 / 0.68</td>
+<td style="text-align: left;">平均は高いが、弱い domain は残る。</td>
+</tr>
+<tr>
+<td style="text-align: left;">large multi-domain</td>
+<td style="text-align: left;">Gemma Instruct</td>
+<td style="text-align: left;">0.90 / 0.74</td>
+<td style="text-align: left;">この設定では最も安定。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Common Claims only</td>
+<td style="text-align: left;">Llama / Llama Instruct</td>
+<td style="text-align: left;">0.64 / 0.57, 0.75 / 0.58</td>
+<td style="text-align: left;">汎用文だけでも一部 generalize するが、worst は弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Common Claims only</td>
+<td style="text-align: left;">Gemma / Gemma Instruct</td>
+<td style="text-align: left;">0.75 / 0.66, 0.77 / 0.50</td>
+<td style="text-align: left;">平均は良いが、domain によって崩れる。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note warn">
+<p>literal / factual な True/False 文に限れば、truth signal は domain-robust。 ただし皮肉・比喩・語用論的転用のように、文脈で命題内容が変わるケースまでは検査していない。</p>
+</div>
+</section>
+</section>
+<section class="screen">
+<div class="kicker">
+<p>Paper 2</p>
+</div>
+<section id="thinking-out-loud" class="level2">
+<h2>Thinking Out Loud</h2>
+<div class="lead">
+<p>reasoning model は高性能になっただけでなく、自分の正誤もよりよく分かるのか。 verbalized confidence と `I don't know` の挙動から評価する。</p>
+</div>
+<div class="three-col">
+<div class="panel">
+<p><strong>reasoning-heavy tasks</strong> reasoning SFT と reasoning RL は accuracy と calibration を改善する。</p>
+</div>
+<div class="panel">
+<p><strong>factuality</strong> 小規模 reasoning model は `I don't know` が減り、知識境界の認識が弱まる可能性がある。</p>
+</div>
+<div class="panel">
+<p><strong>注意点</strong> 推論能力の向上は、自己認識や abstention 能力の向上と同じではない。</p>
+</div>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>Paper 2 / Post-training</p>
+</div>
+<section id="比較軸は-post-training" class="level2">
+<h2>比較軸は post-training</h2>
+<p>この論文のモデル選定は、モデルを広く並べるというより、pretraining 後にどんな訓練を足したかを見る設計である。 同じくらいのサイズや近い系列で、Instruct、SFT reasoning、RL reasoning を比べる。</p>
+<div class="axis">
+<div class="panel">
+<p><strong>pretrained base</strong></p>
+<p>大量テキストで next-token prediction を学習した土台。ここだけでは、指示追従や confidence 表明は安定しにくい。</p>
+</div>
+<div class="arrow">
+<p>→</p>
+</div>
+<div class="panel">
+<p><strong>post-training</strong></p>
+<p>SFT や RL で、指示追従、長い reasoning chain、自己反省的な振る舞い、alignment を後から強める。</p>
+</div>
+</div>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">post-training の種類</th>
+<th style="text-align: left;">訓練のイメージ</th>
+<th style="text-align: left;">代表モデル</th>
+<th style="text-align: left;">この論文での関心</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">general instruction / alignment</td>
+<td style="text-align: left;">ユーザー指示に従う、答えの形式を守る、安全性や有用性を高める。</td>
+<td style="text-align: left;">Qwen2.5-14B/32B-Instruct, DeepSeek-V3</td>
+<td style="text-align: left;">通常の instruct model は confidence calibration の基準線になる。</td>
+</tr>
+<tr>
+<td style="text-align: left;">reasoning SFT</td>
+<td style="text-align: left;">長い chain-of-thought や reasoning trace を真似る。</td>
+<td style="text-align: left;">DeepSeek-R1-Distill-Qwen-14B/32B</td>
+<td style="text-align: left;">推論能力だけでなく、verbalized confidence もよくなるか。</td>
+</tr>
+<tr>
+<td style="text-align: left;">reasoning RL</td>
+<td style="text-align: left;">結果の良さを報酬にして、探索・検算・反省的 reasoning を強める。</td>
+<td style="text-align: left;">DeepCoder-14B, Skywork-OR1-32B, DeepSeek-R1</td>
+<td style="text-align: left;">SFT よりさらに confidence と correctness の対応が改善するか。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>ここでの関心は「どの事前学習モデルが confidence 表明を得意とするか」ではない。 post-training が confidence 表明にどう効くかを見る。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>Paper 2 / Prompting 1</p>
+</div>
+<section id="confidence-は出力として言わせて測る" class="level2">
+<h2>confidence は、出力として言わせて測る</h2>
+<p>この論文は内部 activation を読まず、モデルに回答と confidence を XML 形式で出させる。 その confidence と実際の正誤がどれくらい合うかを ECE / ACE / AUROC / AUPRC で測る。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">prompting strategy</th>
+<th style="text-align: left;">confidence の出させ方</th>
+<th style="text-align: left;">例</th>
+<th style="text-align: left;">狙い</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Vanilla CoT</td>
+<td style="text-align: left;">step-by-step で解かせ、最後に 0%--100% の confidence score を出させる。</td>
+<td style="text-align: left;">`&lt;confidence&gt;80%&lt;/confidence&gt;`</td>
+<td style="text-align: left;">通常の verbalized confidence の基準線。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Vanilla CoT w. Prob</td>
+<td style="text-align: left;">同じく解かせるが、confidence を 0.0--1.0 の probability score として出させる。</td>
+<td style="text-align: left;">`&lt;confidence&gt;0.8&lt;/confidence&gt;`</td>
+<td style="text-align: left;">確率値として聞くと calibration が改善するという先行研究を確認する。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Self-reflection</td>
+<td style="text-align: left;">1回目で回答を出させ、2回目でその problem と solution を見せて confidence だけを評価させる。</td>
+<td style="text-align: left;">`solution` を再読して `&lt;confidence&gt;80%&lt;/confidence&gt;`</td>
+<td style="text-align: left;">一度答えたあとに自己評価させると、正誤認識が改善するかを見る。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>ここで測っているのは「内部に truth signal があるか」ではない。モデルが外に出した confidence が empirical accuracy と合うかである。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>Paper 2 / Results 1</p>
+</div>
+<section id="reasoning-heavy-tasks-では推論訓練で-accuracy-も-calibration-も改善" class="level2">
+<h2>reasoning-heavy tasks では、推論訓練で accuracy も calibration も改善</h2>
+<p>AIME や LiveBench-Reasoning では、Instruct から SFT reasoning へ進むと accuracy が大きく上がり、 ECE も下がる。さらに RL reasoning は、SFT 後に calibration / failure prediction を追加で改善する傾向がある。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">比較</th>
+<th style="text-align: left;">task</th>
+<th style="text-align: left;">Acc ↑</th>
+<th style="text-align: left;">ECE ↓</th>
+<th style="text-align: left;">AUROC ↑</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Qwen2.5-14B Instruct</td>
+<td style="text-align: left;">AIME</td>
+<td style="text-align: left;">11.3%</td>
+<td style="text-align: left;">0.760</td>
+<td style="text-align: left;">0.670</td>
+<td style="text-align: left;">低精度かつ過信寄り。</td>
+</tr>
+<tr>
+<td style="text-align: left;">R1-Distill-Qwen-14B</td>
+<td style="text-align: left;">AIME</td>
+<td style="text-align: left;">46.7%</td>
+<td style="text-align: left;">0.342</td>
+<td style="text-align: left;">0.847</td>
+<td style="text-align: left;">SFT reasoning で大きく改善。</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepCoder-14B</td>
+<td style="text-align: left;">AIME</td>
+<td style="text-align: left;">57.7%</td>
+<td style="text-align: left;">0.222</td>
+<td style="text-align: left;">0.873</td>
+<td style="text-align: left;">RL reasoning でさらに calibration が良い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Qwen2.5-32B Instruct</td>
+<td style="text-align: left;">LiveBench</td>
+<td style="text-align: left;">42.7%</td>
+<td style="text-align: left;">0.472</td>
+<td style="text-align: left;">0.556</td>
+<td style="text-align: left;">難しい reasoning では confidence が弱い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">R1-Distill-Qwen-32B</td>
+<td style="text-align: left;">LiveBench</td>
+<td style="text-align: left;">73.3%</td>
+<td style="text-align: left;">0.152</td>
+<td style="text-align: left;">0.777</td>
+<td style="text-align: left;">SFT reasoning で精度・較正とも改善。</td>
+</tr>
+<tr>
+<td style="text-align: left;">Skywork-32B</td>
+<td style="text-align: left;">LiveBench</td>
+<td style="text-align: left;">84.7%</td>
+<td style="text-align: left;">0.074</td>
+<td style="text-align: left;">0.876</td>
+<td style="text-align: left;">RL reasoning が最も良い。</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepSeek-V3 → R1</td>
+<td style="text-align: left;">LiveBench</td>
+<td style="text-align: left;">50.0% → 89.3%</td>
+<td style="text-align: left;">0.389 → 0.081</td>
+<td style="text-align: left;">0.696 → 0.908</td>
+<td style="text-align: left;">大規模 RL reasoning で強い改善。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note">
+<p>reasoning-heavy な問題では、長く考えられるようにする訓練は性能だけでなく verbalized confidence の信頼性も改善しやすい。</p>
+</div>
+</section>
+</section>
+<section class="flow">
+<div class="kicker">
+<p>Paper 2 / Results 2</p>
+</div>
+<section id="factuality-ではreasoning-model-が分からないと言いにくくなる" class="level2">
+<h2>factuality では、reasoning model が「分からない」と言いにくくなる</h2>
+<p>SimpleQA / FreshQA では、reasoning models は `I don't know` に相当する not attempted response を大きく減らす。 しかし、小規模モデルでは accuracy が十分に上がらず、むしろ calibration が悪化する場合がある。</p>
+<div class="compact-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">比較枠</th>
+<th style="text-align: left;">not attempted: Instruct</th>
+<th style="text-align: left;">SFT reasoning</th>
+<th style="text-align: left;">RL reasoning</th>
+<th style="text-align: left;">読み方</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">14B family</td>
+<td style="text-align: left;">1136</td>
+<td style="text-align: left;">102</td>
+<td style="text-align: left;">103</td>
+<td style="text-align: left;">reasoning 化で abstention が激減。</td>
+</tr>
+<tr>
+<td style="text-align: left;">32B family</td>
+<td style="text-align: left;">2492</td>
+<td style="text-align: left;">76</td>
+<td style="text-align: left;">63</td>
+<td style="text-align: left;">より大きいモデルでも同じ傾向。</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepSeek family</td>
+<td style="text-align: left;">480</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">81</td>
+<td style="text-align: left;">14B/32B とサイズを揃えた比較ではなく、V3/R1 の別枠比較。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="compact-table">
+<table style="width:98%;">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 36%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">比較枠</th>
+<th style="text-align: left;">Shared attempted<br />
+Instruct も LRM も答えた問題</th>
+<th style="text-align: left;">Only LRMs attempted<br />
+Instruct は避け、LRM だけ答えた問題</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">14B family</td>
+<td style="text-align: left;">× Acc は下がり、ECE は悪化<br />
+Instruct 12.5% / 0.598<br />
+SFT 10.5% / 0.692, RL 9.98% / 0.684</td>
+<td style="text-align: left;">× 追加で答えてもほぼ当たらない<br />
+SFT 2.37% / 0.718, RL 2.75% / 0.690</td>
+</tr>
+<tr>
+<td style="text-align: left;">32B family</td>
+<td style="text-align: left;">△ Acc は横ばい、ECE は悪化<br />
+Instruct 17.4% / 0.591<br />
+SFT 17.5% / 0.640, RL 17.1% / 0.600</td>
+<td style="text-align: left;">× 追加で答えてもほぼ当たらない<br />
+SFT 3.7% / 0.717, RL 3.23% / 0.653</td>
+</tr>
+<tr>
+<td style="text-align: left;">DeepSeek family</td>
+<td style="text-align: left;">○ R1 は V3 より Acc / ECE とも改善<br />
+V3 27.5% / 0.496<br />
+R1 34.6% / 0.317</td>
+<td style="text-align: left;">△ R1 は追加問題も多少当てるが難しい<br />
+R1 11.4% / 0.371</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note warn">
+<p>reasoning は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。</p>
+</div>
+</section>
+</section>
+<section class="screen">
+<div class="kicker">
+<p>Readout Problem</p>
+</div>
+<section id="内部状態と出力の対応は訓練と聞き方で変わる" class="level2">
+<h2>内部状態と出力の対応は、訓練と聞き方で変わる</h2>
+<div class="axis">
+<div class="panel">
+<p><strong>内部状態</strong> LLM は truth-sensitive な表現を持ちうる。 ただしそれは局所的で、論理的に完全に coherent とは限らない。</p>
+</div>
+<div class="arrow">
+<p>→</p>
+</div>
+<div class="panel">
+<p><strong>出力 channel</strong> answer、verbalized confidence、abstention はタスク・訓練・prompt に依存する。 factuality では過信や非 abstention が問題になる。</p>
+</div>
+</div>
+<div class="note warn">
+<p>truth-sensitive な内部表象、belief-like representation、confidence の自己申告、abstention は別物である。問題は、それぞれの間の readout がどこで faithful になり、どこで崩れるかである。</p>
+</div>
+</section>
+</section>
+<section class="screen">
+<div class="kicker">
+<p>Expected Takeaway</p>
+</div>
+<section id="今日のまとめ" class="level2">
+<h2>今日のまとめ</h2>
+<div class="lead">
+<p>今日の結論は、LLMが「知っているか」を一語で判定しないこと。内部に読める真偽情報があること、真として使われること、確信や abstention として外に出ることは、それぞれ別に確かめる必要がある。</p>
+</div>
+<div class="three-col">
+<div class="panel">
+<p><strong>地図を固定する</strong></p>
+<p>Truth / Representation / Belief-like state / Confidence / Output を分ける。論文間の違いも、評価指標の違いも、まずこの地図に置くと読みやすい。</p>
+</div>
+<div class="panel">
+<p><strong>内部について</strong></p>
+<p>Paper 1 では truth-sensitive な方向はかなり読めるし、出力も動かせる。ただし negation や coherence で弱さが残るので、「信念」と呼ぶには条件つきで読む。</p>
+</div>
+<div class="panel">
+<p><strong>外への出方について</strong></p>
+<p>Paper 2 では reasoning 訓練で confidence の較正がよくなる場面がある一方、factuality では <code>I don't know</code> が出にくくなる。出力 channel は訓練と聞き方で変わる。</p>
+</div>
+</div>
+<div class="quote">
+<p>持ち帰る問い: それは内部にある話か、外に出た振る舞いの話か。その対応は faithful か。</p>
+</div>
+</section>
+</section>
     </main>
   </body>
 </html>
