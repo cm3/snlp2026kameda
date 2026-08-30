@@ -146,7 +146,6 @@
       <span class="title-paper-authors">Qingcheng Zeng, Weihao Xuan, Leyang Cui, Rob Voigt</span>
     </li>
     </ul>
-    <p class="title-draft-note">（まだ作成中です）</p>
   </div>
   <p class="title-subtitle">LLMが「知っている」ってどういう状態？</p>
   <p class="byline">亀田尭宙（人間文化研究機構）</p>
@@ -613,7 +612,7 @@
 <thead>
 <tr>
 <th style="text-align: left;">モデル</th>
-<th style="text-align: left;">本文での残差読み出し精度 読み方</th>
+<th style="text-align: left;">本文での残差読み出し精度 解釈</th>
 <th></th>
 </tr>
 </thead>
@@ -818,7 +817,7 @@
 <th style="text-align: left;">方向</th>
 <th style="text-align: left;">残差の効果</th>
 <th style="text-align: left;">ヘッドの効果</th>
-<th style="text-align: center;">読み方</th>
+<th style="text-align: center;">解釈</th>
 </tr>
 </thead>
 <tbody>
@@ -913,35 +912,35 @@ P(p) &lt;= P(p or q)</code></pre>
 <thead>
 <tr>
 <th style="text-align: left;">モデル</th>
-<th style="text-align: left;">Common Claims 否定文の精度 読み</th>
-<th style="text-align: left;">方</th>
+<th style="text-align: left;">Common Claims 否定文の精度 解釈</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;">Llama</td>
 <td style="text-align: left;">0.51</td>
-<td style="text-align: left;">ほぼ偶然水準。</td>
+<td>ほぼ偶然水準。</td>
 </tr>
 <tr>
 <td style="text-align: left;">Llama Instruct</td>
 <td style="text-align: left;">0.59</td>
-<td style="text-align: left;">少し改善するが弱い。</td>
+<td>少し改善するが弱い。</td>
 </tr>
 <tr>
 <td style="text-align: left;">Gemma</td>
 <td style="text-align: left;">0.56</td>
-<td style="text-align: left;">弱い。</td>
+<td>弱い。</td>
 </tr>
 <tr>
 <td style="text-align: left;">Gemma Instruct</td>
 <td style="text-align: left;">0.67</td>
-<td style="text-align: left;">相対的には良いが十分強くはない。</td>
+<td>相対的には良いが十分強くはない。</td>
 </tr>
 <tr>
 <td style="text-align: left;">GPT-J</td>
 <td style="text-align: left;">0.44</td>
-<td style="text-align: left;">偶然水準未満。</td>
+<td>偶然水準未満。</td>
 </tr>
 </tbody>
 </table>
@@ -965,7 +964,7 @@ P(p) &lt;= P(p or q)</code></pre>
 <th style="text-align: left;">訓練データ</th>
 <th style="text-align: left;">モデル</th>
 <th style="text-align: left;">平均 / 最低テスト精度</th>
-<th style="text-align: left;">読み方</th>
+<th style="text-align: left;">解釈</th>
 </tr>
 </thead>
 <tbody>
@@ -1179,7 +1178,7 @@ P(p) &lt;= P(p or q)</code></pre>
 <th style="text-align: left;">Acc ↑</th>
 <th style="text-align: left;">ECE ↓</th>
 <th style="text-align: left;">AUROC ↑</th>
-<th style="text-align: left;">読み方</th>
+<th style="text-align: left;">解釈</th>
 </tr>
 </thead>
 <tbody>
@@ -1262,7 +1261,7 @@ P(p) &lt;= P(p or q)</code></pre>
 <th style="text-align: left;">未回答: Instruct</th>
 <th style="text-align: left;">推論SFT</th>
 <th style="text-align: left;">推論RL</th>
-<th style="text-align: left;">読み方</th>
+<th style="text-align: left;">解釈</th>
 </tr>
 </thead>
 <tbody>
@@ -1375,7 +1374,7 @@ P(p) &lt;= P(p or q)</code></pre>
   </table>
 </div>
 <div class="note warn">
-<p>読み方: 小〜中規模の推論モデルは、<code>I don't know</code> を減らして答えに行く。しかし追加で答えた問題の精度は 2〜4% 程度で、ECE も高い。推論は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。</p>
+<p>解釈: 小〜中規模の推論モデルは、<code>I don't know</code> を減らして答えに行く。しかし追加で答えた問題の精度は 2〜4% 程度で、ECE も高い。推論は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。</p>
 </div>
 </section>
 </section>
@@ -1401,29 +1400,93 @@ P(p) &lt;= P(p or q)</code></pre>
 </div>
 </section>
 </section>
-<section class="screen">
+<section class="flow">
+<div class="kicker">
+<p>発展</p>
+</div>
+<section id="周辺研究" class="level2">
+<h2>周辺研究</h2>
+<div class="lead">
+<p>周辺研究は「確信度・棄権を学習対象にする」方向へ伸びている。確認できる引用関係と、今回の2論文から見た接続を分けて読む。</p>
+</div>
+<div class="compact-table data-table">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>方向</th>
+<th>例</th>
+<th>引用関係・接続</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>推論訓練の副作用を見る</td>
+<td><a href="https://arxiv.org/abs/2505.13988">Hallucination Tax of RFT</a></td>
+<td><code>Thinking Out Loud</code> 初版より後発。EMNLP版では引用される。前者が広い比較・診断、こちらは RFT と解けない数学問題に絞った介入可能な副作用分析。</td>
+</tr>
+<tr>
+<td>確信度を報酬に入れる</td>
+<td><a href="https://aclanthology.org/2026.acl-long.520/">Confidence Dichotomy / CAR</a> / <a href="https://arxiv.org/abs/2507.16806">RLCR</a></td>
+<td><code>Confidence Dichotomy</code> は <code>Thinking Out Loud</code>、Hallucination Tax、RLCR を参照。単一回答の確信度から、検索・検証ツールを使う agent の確信度へ拡張する。</td>
+</tr>
+<tr>
+<td>根拠つき検証に分ける</td>
+<td><a href="https://aclanthology.org/2026.acl-long.1468/">Grounded claim factuality</a> / <a href="https://aclanthology.org/2021.findings-emnlp.164/">ContractNLI</a></td>
+<td>直接の引用関係というより設計上の接続。自己申告の確信度に頼らず、claim と evidence span の支持・反証・不在を別タスクとして判定する。</td>
+</tr>
+<tr>
+<td>内部表象の読み方を変える</td>
+<td><a href="https://aclanthology.org/2026.acl-long.2073/">Truth as a Trajectory</a></td>
+<td><code>LLM Beliefs</code> と truth direction / probing の系譜を共有し、ある層の一点ではなく層間の変化として真偽や推論妥当性を見る。</td>
+</tr>
+<tr>
+<td>軽い post-training で試す</td>
+<td><a href="https://arxiv.org/abs/2106.09685">LoRA</a> / <a href="https://arxiv.org/abs/2305.14314">QLoRA</a> / <a href="https://arxiv.org/abs/2305.18290">DPO</a> / <a href="https://arxiv.org/abs/2403.07691">ORPO</a> / <a href="https://arxiv.org/abs/2402.01306">KTO</a> / <a href="https://arxiv.org/abs/2405.14734">SimPO</a></td>
+<td>直接の引用関係ではなく実験手段。重い RL まで行かず、正答率・確信度・棄権のどれが動くかを少量データや選好最適化で比較できる。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note warn">
+<p>確認した範囲: 引用関係が強いのは上の2行。下の3行は、今回の発表から見た発展先として置いている。</p>
+</div>
+</section>
+</section>
+<section class="flow">
 <div class="kicker">
 <p>まとめ</p>
 </div>
-<section id="今日のまとめ" class="level2">
-<h2>今日のまとめ</h2>
+<section id="つの論文を読んで" class="level2">
+<h2>2つの論文を読んで</h2>
 <div class="lead">
-<p>今日の結論は、LLMが「知っているか」を一語で判定しないこと。内部に読める真偽情報があること、真として使われること、確信や棄権として外に出ることは、それぞれ別に確かめる必要がある。</p>
+<p>「知っていること」の周りで、内部に読める真偽情報があること、真として使われること、確信や棄権として外に出ることは、それぞれ別に確かめる必要がある。確かめ方と確かめられるものの特性、その際に比較するモデルとしてどういうものを選べるかという実践がわかった。</p>
 </div>
-<div class="three-col">
-<div class="panel">
-<p><strong>地図を固定する</strong></p>
-<p>真偽 / 内部表象 / 信念に類する状態 / 確信度 / 出力を分ける。論文間の違いも、評価指標の違いも、まずこの地図に置くと読みやすい。</p>
-</div>
-<div class="panel">
-<p><strong>内部について</strong></p>
-<p>Paper 1 では真偽に敏感な方向はかなり読めるし、出力も動かせる。ただし否定や整合性で弱さが残るので、「信念」と呼ぶには条件つきで読む。</p>
-</div>
-<div class="panel">
-<p><strong>外への出方について</strong></p>
-<p>Paper 2 では推論訓練で確信度の較正がよくなる場面がある一方、事実性では <code>I don't know</code> が出にくくなる。出力経路は訓練と聞き方で変わる。</p>
-</div>
-</div>
+<section id="全体像" class="level3">
+<h3>全体像</h3>
+<ul>
+<li>「知っている」を一枚岩にせず、真偽、内部表象、信念らしさ、確信度、出力に分けて見る。</li>
+<li>Paper 1 は、内部の活性値から真偽情報を読めるか、その方向が出力計算にも使われているかを見る。</li>
+<li>Paper 1 の強い点は Accuracy / Use / Uniformity。弱い点は Coherence、特に否定。でも、まあそれは語用上当然な気もする。</li>
+<li>Paper 2 は、内部を直接読まず、モデルが外に出す回答・確信度・<code>I don't know</code> が正誤と合うかを見る。</li>
+<li>推論訓練は、数学・科学QA・一般推論では精度と確信度較正を改善しやすいが、事実性タスクでは、推論モデルが <code>I don't know</code> と言いにくくなり、知識境界の認識が弱まる場合がある。</li>
+<li>実践的には、モデル比較では「サイズ」「系列」「追加訓練の種類」を分けて見る必要がある。</li>
+</ul>
+</section>
+<section id="細かい論点など" class="level3">
+<h3>細かい論点など</h3>
+<ul>
+<li>Paper 1 の probing 自体はかなり標準的。固定したモデルの中間活性から、線形分類器、主にロジスティック回帰、で真偽ラベルを読む。</li>
+<li>特殊なのは、真偽が読めるかだけでなく、それが出力に使われるか、論理的に整合するか、領域を越えて保たれるかまで、信念らしさの条件として分けている点。</li>
+<li>注意ヘッド出力を個別に見ることで、残差ストリームより局所的で介入しやすい真偽情報の場所を探している。</li>
+<li>Paper 2 は内部を直接読まず、外に出た回答、確信度、棄権を見る。推論訓練は推論課題の較正を改善しても、事実性では「分からない」と言う力を弱める場合がある。</li>
+<li>次に試すなら、重い RL だけでなく、LoRA / QLoRA による SFT や、DPO / ORPO / KTO / SimPO などの軽量な post-training で、正答率・確信度・棄権のどれが動くかを比較できる。</li>
+</ul>
+</section>
 </section>
 </section>
     </main>
