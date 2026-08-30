@@ -409,6 +409,31 @@
         font-size: 1rem;
       }
 
+      .source-figure {
+        display: grid;
+        gap: 14px;
+        margin: 18px 0;
+      }
+
+      .source-figure img {
+        display: block;
+        width: 100%;
+        max-height: 68svh;
+        object-fit: contain;
+        border: 1px solid var(--line);
+        background: var(--paper);
+      }
+
+      .source-figure figcaption {
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.45;
+      }
+
+      .source-figure.compact-source img {
+        max-height: 58svh;
+      }
+
       .shape-note {
         display: inline-block;
         border: 1px solid var(--line);

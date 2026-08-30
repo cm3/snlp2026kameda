@@ -614,6 +614,23 @@ Llama / Gemma 系では内部介入が概ね成功し、GPT-J は反応が弱い
 :::
 ::::::
 
+:::: {.section .flow}
+::: kicker
+論文1 / 原表
+:::
+
+## Table 2: 介入で出力がどれくらい動くか
+
+<figure class="source-figure compact-source">
+  <img src="assets/figures/paper1-table2-steering.png" alt="LLM Beliefs Are in Their Heads Table 2: full steering results">
+  <figcaption>Source: Corona Mendozza and Søgaard (2026), Table 2.</figcaption>
+</figure>
+
+::: note
+見る場所は `E` と `E/S`。`E` は介入前後で正解・不正解トークン確率がどれだけ動いたか、`S` は介入強度、`E/S` は強度あたりの効きやすさである。Llama / Gemma 系は動き、GPT-J は弱い。ヘッド介入は `α` が小さくても効きやすいので、単なる読み出しではなく Use の証拠として使われる。
+:::
+::::
+
 :::::::: {.section .flow}
 ::: kicker
 5.3 Coherence
@@ -699,6 +716,23 @@ Coherence は、真偽に敏感な表象が否定・連言・選言に対して�
 文字通りの事実的な真偽文に限れば、真偽信号は領域をまたいで頑健である。ただし皮肉・比喩・語用論的転用のように、文脈で命題内容が変わるケースまでは検査していない。
 :::
 ::::::
+
+:::: {.section .flow}
+::: kicker
+論文1 / 原図
+:::
+
+## Figure 9: 4基準を一枚に集約するとどう見えるか
+
+<figure class="source-figure">
+  <img src="assets/figures/paper1-fig9-model-scores.png" alt="LLM Beliefs Are in Their Heads Figure 9: model scores across belief-likeness criteria">
+  <figcaption>Source: Corona Mendozza and Søgaard (2026), Figure 9.</figcaption>
+</figure>
+
+::: note
+Accuracy / Use / Coherence / Uniformity をまとめた概観図。大きな点は、ヘッド単位の表現が残差ストリームと同程度、場合によってはよりくっきり・介入しやすく見えること。ただし Appendix A.2 の正規化スコアなので、個別実験の数値そのものではなく、全体傾向の地図として読む。
+:::
+::::
 
 :::::: {.section .screen}
 ::: kicker
@@ -800,6 +834,23 @@ SFT や RL で、指示追従、長い推論過程、自己反省的な振る舞
 :::
 ::::::::::
 
+:::: {.section .flow}
+::: kicker
+論文2 / 原図
+:::
+
+## Figure 2: 何を比べ、何を測っているか
+
+<figure class="source-figure">
+  <img src="assets/figures/paper2-fig2-eval-design.png" alt="Thinking Out Loud Figure 2: verbalized confidence evaluation design">
+  <figcaption>Source: Zeng et al. (2025), Figure 2.</figcaption>
+</figure>
+
+::: note
+左から、タスクの種類、聞き方、モデルタイプ、出力、評価指標が並ぶ。この論文は内部活性を読まず、回答と一緒に言語化された確信度を出させ、その確信度が正誤と合うかを calibration / failure prediction として測る。
+:::
+::::
+
 :::::: {.section .flow}
 ::: kicker
 論文2 / 聞き方
@@ -819,6 +870,31 @@ SFT や RL で、指示追従、長い推論過程、自己反省的な振る舞
 
 ::: note
 ここで測っているのは「内部に真偽信号があるか」ではない。モデルが外に出した確信度が実際の正答率と合うかである。
+:::
+::::::
+
+:::::: {.section .flow}
+::: kicker
+論文2 / 聞き方の比較
+:::
+
+## 聞き方は効くが、支配的なのは訓練とサイズ
+
+Table 4 は、3つの聞き方ごとの ECE を比較している。ECE は低いほど、言語化された確信度と実際の正答率が合っている。
+
+::: {.compact-table .data-table}
+| タスク / モデル | 通常CoT | 確率値CoT | 自己評価 | 解釈 |
+|---|---:|---:|---:|---|
+| AIME / Qwen2.5-14B | 0.760 | 0.768 | **0.422** | 自己評価で大きく改善。 |
+| LiveBench / R1-Distill-Qwen-32B | 0.152 | 0.213 | **0.100** | 推論タスクでは自己評価が効く場合がある。 |
+| LiveBench / DeepSeek-R1 | 0.081 | **0.071** | 0.077 | 大規模RLでは、聞き方より元の較正が強い。 |
+| SimpleQA / R1-Distill-Qwen-14B | 0.719 | **0.709** | 0.738 | 事実性では自己評価で悪化する場合がある。 |
+| SimpleQA / DeepSeek-R1 | 0.324 | **0.305** | 0.551 | 自己評価が過信を強める例。 |
+| FreshQA / Qwen2.5-14B | 0.436 | 0.432 | **0.287** | データセットによっては自己評価が改善する。 |
+:::
+
+::: {.note .warn}
+読み方: prompting strategy は較正を動かすが、万能の聞き方はない。論文の主張は、prompt よりも追加訓練の種類とモデルサイズが支配的、というところにある。
 :::
 ::::::
 
@@ -961,6 +1037,23 @@ Instruct は `I don't know` と避けたが、推論モデルだけが答えた�
 解釈: 小〜中規模の推論モデルは、`I don't know` を減らして答えに行く。しかし追加で答えた問題の精度は 2〜4% 程度で、ECE も高い。推論は「考えて答える」力を上げるが、「知らないときに止まる」力を自動的に上げるわけではない。
 :::
 :::::::
+
+:::: {.section .flow}
+::: kicker
+論文2 / 原表
+:::
+
+## Table 3: 追加で答えた問題は本当に当たっているか
+
+<figure class="source-figure compact-source">
+  <img src="assets/figures/paper2-table3-factuality.png" alt="Thinking Out Loud Table 3: factuality evaluation for shared attempted and only LRMs attempted questions">
+  <figcaption>Source: Zeng et al. (2025), Table 3.</figcaption>
+</figure>
+
+::: note
+上段は Instruct と推論モデルが共通して答えた問題、下段は Instruct が答えなかったのに推論モデルだけが答えた問題。14B / 32B では、追加で答えた問題の精度が 2〜4% 程度にとどまる。ここが「推論モデルは知らないと言いにくくなる」という主張の中心である。
+:::
+::::
 
 ::::::::: {.section .screen}
 ::: kicker
